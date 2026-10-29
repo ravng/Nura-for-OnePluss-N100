@@ -1,0 +1,12 @@
+#!/sbin/openrc-run
+
+name="billie2 Wi-Fi bring-up"
+description="Start downstream Qualcomm services and WLAN firmware"
+command="/usr/local/sbin/billie2-wifi-start"
+command_background="yes"
+pidfile="/run/billie2-wifi.pid"
+
+ depend() {
+	need localmount udev
+	before networkmanager
+}

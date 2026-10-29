@@ -1,0 +1,46 @@
+#!/bin/sh
+set -eu
+
+mkdir -p /vendor /vendor/firmware_mnt /run/billie2-firmware
+mountpoint -q /vendor || mount -o ro /dev/mapper/vendor_a /vendor
+mountpoint -q /vendor/firmware_mnt || mount -o ro /dev/disk/by-partlabel/modem_a /vendor/firmware_mnt
+printf '%s' /vendor/firmware > /sys/module/firmware_class/parameters/path
+if [ -c /dev/ipa ] && [ -f /vendor/firmware/ipa_fws.mdt ]; then
+	printf '1\n' > /dev/ipa
+	sleep 2
+fi
+
+
+rm -f /run/billie2-firmware/*
+for firmware in /vendor/firmware_mnt/image/*; do
+	ln -s "$firmware" /run/billie2-firmware/
+done
+ln -s /vendor/firmware/wlan /run/billie2-firmware/wlan
+printf '%s' /run/billie2-firmware > /sys/module/firmware_class/parameters/path
+
+udevadm trigger /sys/class/uio/uio0
+udevadm settle
+
+/usr/local/sbin/qrtr-ns -f &
+echo $! > /run/billie2-qrtr-ns.pid
+
+/usr/local/sbin/pd-mapper \
+	/vendor/firmware_mnt/image/adspr.jsn \
+	/vendor/firmware_mnt/image/adsps.jsn \
+	/vendor/firmware_mnt/image/adspua.jsn \
+	/vendor/firmware_mnt/image/cdspr.jsn \
+	/vendor/firmware_mnt/image/modemr.jsn \
+	/vendor/firmware_mnt/image/modemuw.jsn &
+echo $! > /run/billie2-pd-mapper.pid
+rc-service tqftpserv stop 2>/dev/null || true
+/usr/local/sbin/tqftpserv-downstream &
+echo $! > /run/billie2-tqftpserv.pid
+
+
+/usr/local/sbin/rmtfs-downstream -s -P -r &
+echo $! > /run/billie2-rmtfs.pid
+
+sleep 15
+insmod /vendor/lib/modules/qca_cld3_wlan.ko
+sleep 5
+printf 'ON\n' > /dev/wlan

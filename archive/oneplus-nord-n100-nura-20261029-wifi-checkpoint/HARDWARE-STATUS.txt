@@ -1,0 +1,129 @@
+ONEPLUS NORD N100 (BILLIE2) NURA HARDWARE STATUS
+================================================
+Last updated: 2026-10-29
+Checkpoint: oneplus-nord-n100-nura-20261029-wifi-checkpoint
+
+Status meanings
+---------------
+WORKING: physically demonstrated on this N100.
+PARTIAL: low-level support works, but the complete user-visible function does not.
+NOT WORKING: tested and confirmed unavailable.
+UNTESTED: no result has been demonstrated; this does not prove failure.
+WORKAROUND: usable, but dependent on a temporary compatibility fix.
+
+WORKING
+-------
+- Boot to graphical Phrog login
+- Login to Phosh desktop
+- Display output
+- Internal root storage
+- USB Ethernet gadget
+- SSH over USB at 172.16.42.1
+- Volume-up button
+- Volume-down button
+- Power/wake button
+
+WORKING WITH WORKAROUND
+-----------------------
+- Touchscreen
+  Works at login and after entering the Phosh session using the
+  billie2-touch-resume kernel module/helper. A correct downstream DRM/Phoc
+  unblank fix is still needed.
+
+PARTIAL
+-------
+- Wi-Fi
+  wlanmdsp.mbn transfers successfully; QRTR WLAN service 69 appears; ICNSS
+  completes indication registration, MSA setup, MSA-ready indication, and
+  capability query. Firmware never emits QMI_WLFW_FW_READY_IND, so wlan0 is
+  not created.
+
+- GPU acceleration
+  Mesa 26.2.5 Turnip built with the KGSL backend opens /dev/kgsl-3d0 and
+  identifies the Adreno 610 in hardware. Vulkan physical-device enumeration
+  is proven. EGL/GLES cannot use KGSL on this Linux/musl stack, and a Vulkan
+  Wayland surface cannot be presented through the current Pixman compositor,
+  so the graphical login and Phosh session remain software-rendered.
+
+- Cellular modem foundation
+  Patched rmtfs, QRTR namespace, pd-mapper, modem QMI service enumeration,
+  and IPA firmware loading work. This does not prove SIM registration,
+  telephony, SMS, or mobile data.
+
+- IPA
+  /vendor/firmware/ipa_fws.mdt loads through /dev/ipa, leaves reset, creates
+  rmnet_ipa0, and resolves the IPA/WLAN SMMU mismatch.
+
+- Charging and battery reporting
+  Kernel charger and battery events are present. Charging behavior, battery
+  percentage accuracy, thermal behavior, and runtime have not been validated.
+
+NOT WORKING
+-----------
+- Wi-Fi network interface (no wlan0)
+- Wi-Fi access-point scanning
+- Wi-Fi association and traffic
+
+UNTESTED
+--------
+- SIM detection and cellular network registration
+- Voice calls
+- SMS
+- Mobile data traffic
+- Speaker audio
+- Earpiece audio
+- Microphones
+- Headphone audio and audio routing
+- Call audio
+- Bluetooth controller/HCI
+- Bluetooth discovery and pairing
+- Bluetooth audio
+- Front and rear cameras
+- Camera flash
+- GPS/GNSS
+- Accelerometer
+- Gyroscope
+- Proximity sensor
+- Ambient-light sensor
+- Compass
+- Fingerprint reader
+- NFC
+- microSD card
+- Vibration/haptics
+- Notification LED
+- Flashlight/torch
+- System suspend and resume
+- Repeated wake/suspend cycles
+- Long-duration power and thermal behavior
+- GPU-accelerated compositor and graphical session
+- Hardware video decode
+- MTP
+- USB host/OTG mode
+- USB tethering modes other than the proven Ethernet gadget
+
+SAFETY / CURRENT LIMITATIONS
+----------------------------
+- The graphical session still uses Pixman software rendering. Hardware Turnip
+  Vulkan enumeration works through KGSL, but this does not accelerate Phoc.
+- Ubuntu Touch's working route is Android KGSL + proprietary EGL/libhybris +
+  Mir in a glibc/Halium environment. It is not a drop-in wlroots renderer for
+  Nura's musl/Phoc stack.
+- Never unload a partially initialized WLAN module live. A previous rmmod
+  caused a kernel Oops.
+- Keep the experimental billie2-wifi OpenRC service disabled until genuine
+  FW_READY, wlan0, AP scanning, association, and traffic are observed.
+- Never boot /tmp/nura-billie2-no-rejuvenation.img; it entered Qualcomm
+  CrashDump.
+
+NEXT HARDWARE MILESTONES
+------------------------
+1. Obtain genuine QMI_WLFW_FW_READY_IND and create wlan0.
+2. Scan for access points, associate, and verify Wi-Fi traffic.
+3. Validate SIM registration, calls, SMS, mobile data, and call audio.
+4. Bring up and validate normal audio routing.
+5. Bring up Bluetooth and test pairing/audio.
+6. Bridge Android EGL/KGSL into a wlroots-compatible renderer, move the port
+   to an upstream-compatible DRM kernel, or adopt the Ubuntu Touch
+   Halium/libhybris/Mir graphics stack; then validate accelerated login.
+7. Test cameras, GPS, sensors, fingerprint, NFC, microSD, haptics, LEDs,
+   flashlight, suspend/resume, video decode, and remaining USB modes.

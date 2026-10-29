@@ -1,0 +1,82 @@
+Linux nura-billie2 4.19.95-perf+ #1 SMP PREEMPT Wed Sep 16 09:51:32 UTC 2026 aarch64 Linux
+
+PRETTY_NAME="Nura edge"
+NAME="Nura"
+VERSION_ID="edge"
+VERSION="edge"
+ID="nura"
+ID_LIKE="alpine"
+HOME_URL="https://nura.eco/"
+SUPPORT_URL="https://gitlab.postmarketos.org/postmarketOS"
+BUG_REPORT_URL="https://gitlab.postmarketos.org/postmarketOS/pmaports/issues"
+LOGO="postmarketos-logo"
+ANSI_COLOR="0;32"
+
+lo               UNKNOWN        00:00:00:00:00:00 <LOOPBACK,UP,LOWER_UP> 
+bond0            DOWN           56:ff:ea:bb:dc:b7 <BROADCAST,MULTICAST,MASTER> 
+dummy0           DOWN           66:27:5e:61:ad:50 <BROADCAST,NOARP> 
+ip_vti0@NONE     DOWN           0.0.0.0 <NOARP> 
+ip6_vti0@NONE    DOWN           :: <NOARP> 
+sit0@NONE        DOWN           0.0.0.0 <NOARP> 
+ip6tnl0@NONE     DOWN           :: <NOARP> 
+usb0             UP             3a:ca:d7:24:f9:79 <BROADCAST,MULTICAST,UP,LOWER_UP> 
+
+proc on /proc type proc (rw,relatime)
+sysfs on /sys type sysfs (rw,nosuid,nodev,noexec,relatime)
+dev on /dev type devtmpfs (rw,nosuid,noexec,relatime,size=10240k,nr_inodes=437555,mode=755)
+run on /run type tmpfs (rw,nosuid,nodev,relatime,mode=755)
+configfs on /sys/kernel/config type configfs (rw,nosuid,nodev,noexec,relatime)
+devpts on /dev/pts type devpts (rw,relatime,mode=600,ptmxmode=000)
+/dev/sda16 on / type ext4 (rw,relatime)
+mqueue on /dev/mqueue type mqueue (rw,nosuid,nodev,noexec,relatime)
+shm on /dev/shm type tmpfs (rw,nosuid,nodev,noexec,relatime)
+securityfs on /sys/kernel/security type securityfs (rw,nosuid,nodev,noexec,relatime)
+debugfs on /sys/kernel/debug type debugfs (rw,nosuid,nodev,noexec,relatime)
+tracefs on /sys/kernel/tracing type tracefs (rw,nosuid,nodev,noexec,relatime)
+fusectl on /sys/fs/fuse/connections type fusectl (rw,nosuid,nodev,noexec,relatime)
+pstore on /sys/fs/pstore type pstore (rw,nosuid,nodev,noexec,relatime)
+bpf on /sys/fs/bpf type bpf (rw,nosuid,nodev,noexec,relatime)
+/dev/sda2 on /run/msm-firmware-loader/mnt/persist type ext4 (ro,nosuid,nodev,noexec,relatime)
+tmpfs on /tmp type tmpfs (rw,nosuid,nodev,nr_inodes=409600)
+cgroup2 on /sys/fs/cgroup type cgroup2 (rw,nosuid,nodev,noexec,relatime,nsdelegate)
+tmpfs on /run/user/108 type tmpfs (rw,nosuid,nodev,relatime,size=371108k,nr_inodes=92777,mode=700,uid=108,gid=113)
+tmpfs on /run/user/10000 type tmpfs (rw,nosuid,nodev,relatime,size=371108k,nr_inodes=92777,mode=700,uid=10000,gid=10000)
+
+Runlevel: default
+ swapfile                                                          [  started  ]
+ postmarketos-zram-swap                                            [  started  ]
+ nftables                                                          [  stopped  ]
+ haveged                                                           [  started  ]
+ sleep-inhibitor                                       [  started 00:06:05 (0) ]
+ dbus                                                              [  started  ]
+ cgroups                                                           [  started  ]
+ elogind                                               [  started 00:06:07 (0) ]
+ greetd                                                            [  started  ]
+ udev-postmount                                                    [  started  ]
+ apk-polkit-server                                     [  started 00:06:07 (0) ]
+ wpa_supplicant                                        [  started 00:06:06 (0) ]
+ sshd                                                              [  started  ]
+ modemmanager                                                         [ failed ]
+ billie2-touch-resume                                              [  started  ]
+ networkmanager                                        [  started 00:06:06 (0) ]
+ routewrangler                                         [  started 00:06:05 (0) ]
+ bluetooth                                             [  started 00:06:07 (0) ]
+ call_audio_idle_suspend_workaround                    [  started 00:06:07 (0) ]
+ chronyd                                                           [  stopped  ]
+ iio-sensor-proxy                                                     [ failed ]
+ openrc-settingsd                                                  [  started  ]
+ rfkill                                                            [  started  ]
+ usb-signaller                                         [  started 00:06:05 (0) ]
+ local                                                             [  started  ]
+Dynamic Runlevel: hotplugged
+Dynamic Runlevel: needed/wanted
+ sysfs                                                             [  started  ]
+ fsck                                                              [  started  ]
+ root                                                              [  started  ]
+ localmount                                                        [  started  ]
+ polkit                                                               [ failed ]
+ udev-settle                                                       [  started  ]
+Dynamic Runlevel: manual
+ modemmanager                                                         [ failed ]
+ iio-sensor-proxy                                                     [ failed ]
+ usb-signaller-developer-mode                                      [  started  ]

@@ -1,0 +1,394 @@
+NURA / POSTMARKETOS PORT: ONEPLUS NORD N100 (BILLIE2)
+Wi-Fi investigation handoff — 2026-10-29
+
+CURRENT USER-VISIBLE STATE
+==========================
+- The device boots to the graphical Phosh login.
+- Login, touch, and graphical session were previously repaired and verified.
+- USB developer networking works after reconnecting the cable if usb0 does not acquire 172.16.42.1 on first boot.
+- Wi-Fi is NOT working yet. There is no wlan0 interface and no access-point scan has succeeded.
+- The experimental Wi-Fi OpenRC service was removed from the default runlevel because it does not complete and automatic modem experiments can cause Qualcomm CrashDump Mode.
+- The device was left responsive at graphical login with USB SSH available.
+
+KNOWN-GOOD BOOT/ROOT ARTIFACTS
+==============================
+Host workspace: /home/ravn/storage/nuraport
+Known-good transient boot image: /tmp/nura-billie2-clean-boot.img
+Known-good root image: /tmp/nura-billie2-phosh-rootfs-v5.img
+Archive: /home/ravn/storage/nuraport/archive/oneplus-nord-n100-nura-20261028
+Device package: device/downstream/device-oneplus-billie2-downstream
+
+Recovery boot:
+  fastboot boot /tmp/nura-billie2-clean-boot.img
+
+USB SSH:
+  phone: 172.16.42.1
+  user/password: nura / nura
+  host NetworkManager profile: nura-n100-usb
+  host address: 172.16.42.2/24
+
+The USB Ethernet interface name changes on every enumeration. Find the current enx* interface and bind the profile:
+  nmcli connection modify nura-n100-usb connection.interface-name <current-enx-interface>
+  nmcli connection up nura-n100-usb
+
+If the phone reaches graphical login but 172.16.42.1 does not answer ARP, unplug and reconnect the USB cable. This consistently restores usb0 without rebooting.
+
+DO NOT FLASH OR REPLACE THE KNOWN-GOOD ROOT/BOOT ARTIFACTS UNTIL A NEW PATH IS PROVEN.
+
+WI-FI HARDWARE/DRIVER FINDINGS
+==============================
+Kernel:
+- Version: 4.19.95-perf+
+- CONFIG_QCA_CLD_WLAN=m
+- CONFIG_ICNSS=y
+- CONFIG_ICNSS_QMI=y
+- CONFIG_CNSS_UTILS=y
+- CONFIG_QRTR=y
+- CONFIG_QRTR_SMD=y
+
+Stock OxygenOS vendor partition contains the exact matching WLAN module:
+  /vendor/lib/modules/qca_cld3_wlan.ko
+- Module version: 5.2.03.28T
+- Vermagic matches 4.19.95-perf+.
+- It uses ICNSS/SNOC and is the correct module. A locally built qcacld module was not sufficient.
+
+Firmware/config locations:
+  /vendor/firmware/wlan/qca_cld/WCNSS_qcom_cfg.ini
+  /vendor/firmware/wlan/qca_cld/wlan_mac.bin
+  /vendor/firmware_mnt/image/wlanmdsp.mbn
+  /vendor/firmware_mnt/image/*.jsn
+
+The module loads and creates /dev/wlan:
+  insmod /vendor/lib/modules/qca_cld3_wlan.ko
+
+The downstream driver requires this Android-style activation command:
+  printf 'ON\n' > /dev/wlan
+
+Activation currently waits approximately 25–60 seconds and returns EINVAL. Kernel log:
+  Timed-out in wlan_hdd_state_ctrl_param_write
+
+Cause: ICNSS never receives QMI_WLFW_FW_READY_IND. QMI WLAN firmware service ID 0x45 (decimal 69) never appears in qrtr-lookup.
+
+IMPORTANT SAFETY RULES
+======================
+- NEVER rmmod qca_cld3_wlan.ko live. An earlier attempt caused a kernel Oops because driver initialization had not completed. Reboot between WLAN module experiments.
+- Do not open /dev/subsys_modem without QRTR namespace and rmtfs already prepared. Incorrect ordering repeatedly caused modem crashes or Qualcomm CrashDump Mode.
+- Keep fastboot recovery available.
+- Do not enable the experimental billie2-wifi OpenRC service at boot until WLAN FW_READY and wlan0 are proven.
+
+DYNAMIC PARTITIONS AND MOUNTS
+=============================
+Package make-dynpart-mappings was installed on the device. The root currently exposes:
+  /dev/mapper/system_a
+  /dev/mapper/vendor_a
+
+Useful manual mounts:
+  mkdir -p /vendor /vendor/firmware_mnt
+  mount -o ro /dev/mapper/vendor_a /vendor
+  mount -o ro /dev/disk/by-partlabel/modem_a /vendor/firmware_mnt
+
+The current kernel command line does not provide androidboot.slot_suffix, so msm-firmware-loader does not automatically mount vendor_a/modem_a. A device-specific service must explicitly use the _a mappings.
+
+QRTR/RMTFS BREAKTHROUGH
+=======================
+The current Alpine qrtr package no longer ships legacy qrtr-ns. This downstream 4.19 kernel REQUIRES userspace qrtr-ns. Without it, qcom_smd_qrtr logs:
+  failed to create endpoint
+
+Legacy qrtr-ns was built from linux-msm/qrtr tag v1.2. Starting it before the modem makes QRTR work:
+  /usr/local/sbin/qrtr-ns -f
+
+The current upstream rmtfs expects /sys/class/remoteproc and fails with:
+  Failed to get rprocfd
+
+A patched rmtfs was built. Its rproc fallback opens /dev/subsys_modem, holds that descriptor, and treats start as a no-op. It is installed on the live root as:
+  /usr/local/sbin/rmtfs-downstream
+
+rmtfs also needs the downstream UIO alias. The installed udev rule creates it after retriggering:
+  udevadm trigger /sys/class/uio/uio0
+  udevadm settle
+  /dev/qcom_rmtfs_uio1 -> uio0
+
+Then this succeeds and remains running:
+  /usr/local/sbin/rmtfs-downstream -s -P -r
+
+With qrtr-ns started first, the modem boots stably and qrtr-lookup lists many services. Confirmed kernel log:
+  Modem has booted up
+
+The current upstream pd-mapper also assumes /sys/class/remoteproc and exits:
+  pd-mapper: failed to open remoteproc class
+  no pd maps available
+
+A legacy pd-mapper from linux-msm/pd-mapper commit 9543190 was built. It accepts explicit JSON map arguments and is installed as:
+  /usr/local/sbin/pd-mapper
+
+Start it BEFORE rmtfs/modem with:
+  /usr/local/sbin/pd-mapper \
+    /vendor/firmware_mnt/image/adspr.jsn \
+    /vendor/firmware_mnt/image/adsps.jsn \
+    /vendor/firmware_mnt/image/adspua.jsn \
+    /vendor/firmware_mnt/image/cdspr.jsn \
+    /vendor/firmware_mnt/image/modemr.jsn \
+    /vendor/firmware_mnt/image/modemuw.jsn
+
+modemuw.jsn maps provider/service wlan/fw to msm/modem/wlan_pd, QMI instance 180.
+
+With this ordering the kernel reached a new state:
+  service-notifier: Connection established between QMI handle and 180 service
+
+This proves QRTR, rmtfs, PD mapping, and the modem root protection domain are substantially correct. However, QMI service 69 still did not appear and ICNSS never reported WLAN FW ready.
+
+FIRMWARE PATH / TQFTPSERV
+=========================
+Native tqftpserv is installed and starts normally. It serves Qualcomm firmware over QRTR.
+
+The experiment built /run/billie2-firmware from symlinks to every item in /vendor/firmware_mnt/image plus:
+  wlan -> /vendor/firmware/wlan
+
+Then it wrote that directory to:
+  /sys/module/firmware_class/parameters/path
+
+The current value should be written WITHOUT assuming a newline behavior until the installed tqftpserv implementation is checked directly:
+  printf %s /run/billie2-firmware > /sys/module/firmware_class/parameters/path
+
+The latest upstream tqftpserv source strips the final byte assuming a newline, but the installed binary/version may differ. This path translation behavior is the leading unresolved suspect. Enable tqftpserv debug logging and inspect the exact requested filename and translated host path. Verify that requests for WLAN PD files are served successfully rather than ENOENT.
+
+EXPERIMENTAL LIVE-ROOT FILES
+============================
+The following experimental binaries/files exist on the device root but are not yet packaged into the repository build:
+  /usr/local/sbin/qrtr-ns
+  /usr/local/sbin/pd-mapper
+  /usr/local/sbin/rmtfs-downstream
+  /usr/local/sbin/billie2-wifi-start
+  /etc/init.d/billie2-wifi
+
+billie2-wifi was REMOVED from the default OpenRC runlevel after testing:
+  rc-update del billie2-wifi default
+
+Do not re-enable it as-is. The script reaches modem boot and service-notifier instance 180, then WLAN activation still times out. Its child services remain useful for manual investigation.
+
+Source checkouts and local experiment files on the host:
+  /tmp/rmtfs-src
+  /tmp/qrtr-src
+  /tmp/pd-mapper-src
+  /tmp/tqftpserv-src
+  /tmp/billie2-wifi-start
+  /tmp/billie2-wifi
+  /tmp/kernel-oneplus-sm4250
+  /tmp/kernel-oneplus-build
+
+The critical rmtfs patch is in /tmp/rmtfs-src/rproc.c. Preserve/copy it before /tmp is cleared.
+
+UBUNTU TOUCH REFERENCE
+======================
+UBports adaptation checkout:
+  /tmp/oneplus-billie2
+
+Downloaded artifacts:
+  /tmp/billie2-ubports-artifacts.zip
+  /tmp/device_billie2.tar.xz
+  /tmp/device-billie2-ubports
+
+UBports loads:
+  /vendor/lib/modules/qca_cld3_wlan.ko
+
+Ubuntu Touch relies on the Android/Halium container and Android vendor daemons (qrtr-ns, rmt_storage, pd-mapper). Nura is native Alpine/OpenRC, so equivalent native services must be supplied in the right order. Merely copying the module is insufficient.
+
+RECOMMENDED NEXT INVESTIGATION
+==============================
+1. Keep the current graphical boot and USB SSH path unchanged.
+2. Mount vendor_a and modem_a.
+3. Start legacy qrtr-ns.
+4. Start legacy pd-mapper with all six JSON files.
+5. Configure the firmware path and start tqftpserv in foreground/debug mode. Capture exact RRQ paths and ENOENT failures.
+6. Trigger the UIO udev alias.
+7. Start patched rmtfs-downstream last, which boots and holds the modem.
+8. Confirm qrtr-lookup shows modem services and service-notifier instance 180.
+9. Determine why the WLAN PD does not publish QMI service 69. Most likely causes:
+   - tqftpserv path translation cannot find a WLAN PD file;
+   - missing firmware symlink/layout under /lib/firmware or the custom firmware path;
+   - an additional downstream service-notifier vote/start operation is needed;
+   - Android vendor pd-mapper behavior differs from the old native implementation.
+10. Only after qrtr-lookup shows service 69, load qca_cld3_wlan.ko and write ON to /dev/wlan.
+11. Confirm wlan0 exists before involving NetworkManager.
+12. Then run:
+      nmcli radio wifi on
+      nmcli device wifi rescan
+      nmcli device wifi list
+13. Ask for SSID/password only after scanning works.
+14. Once proven, package binaries, rules, mounts, firmware layout, and ordered OpenRC services into device-oneplus-billie2-downstream; rebuild root image; smoke-test a clean boot; then update this archive.
+
+PROMPT FOR A FUTURE LLM
+=======================
+Continue the Nura/postmarketOS OnePlus Nord N100 (billie2) Wi-Fi bring-up from:
+  /home/ravn/storage/nuraport/archive/oneplus-nord-n100-nura-20261028/WIFI-HANDOFF-2026-10-29.txt
+
+Read that file fully before touching the phone. The device boots to graphical Phosh login and is recoverable with `fastboot boot /tmp/nura-billie2-clean-boot.img`. USB SSH is nura@nura@172.16.42.1 in the sense that username/password are both `nura`; host profile is `nura-n100-usb`. Wi-Fi is not working yet. Do not rmmod WLAN and do not open `/dev/subsys_modem` without legacy qrtr-ns, legacy pd-mapper, UIO alias, firmware mounts, tqftpserv, and patched rmtfs prepared.
+
+The proven progress is: legacy qrtr-ns + patched rmtfs boots modem stably and provides QRTR services; legacy pd-mapper with modemuw.jsn produces service-notifier instance 180; patched tqftpserv successfully transfers wlanmdsp.mbn and makes QMI WLFW service 69 appear. The remaining blocker is that ICNSS connects to service 69 but never reports FW_READY, so `echo ON > /dev/wlan` still times out. Do not persist or enable an automatic startup service until ICNSS FW_READY, wlan0, AP scan, and real traffic are all observed. Preserve the known-good graphical image and update this handoff with evidence.
+
+VERIFICATION STATUS
+===================
+Observed:
+- graphical login: working
+- touch/session: working from prior checkpoint
+- USB SSH after cable reconnect: working
+- stock WLAN module load: working
+- /dev/wlan creation: working
+- legacy qrtr-ns: working
+- patched rmtfs modem hold: working
+- modem QRTR service enumeration: working
+- legacy pd-mapper service-notifier instance 180: working
+
+Observed after this file was first written:
+- QMI WLFW service 69 appears after patching tqftpserv.
+- tqftpserv transfers all 3,892,648 bytes of wlanmdsp.mbn successfully.
+- service-notifier reports msm/modem/wlan_pd up and ICNSS logs `QMI Server Connected: state: 0x580`.
+
+Not observed / not complete:
+- ICNSS FW_READY after QMI connection
+- wlan0
+- access-point scan
+- Wi-Fi association
+- Wi-Fi Internet traffic
+- packaged/rebuilt Wi-Fi fix
+
+LATEST TQFTPSERV BREAKTHROUGH
+============================
+The stock/native tqftpserv could not serve downstream firmware because `translate_readonly()` returned immediately when `/sys/class/remoteproc` was absent. Its debug log showed:
+  read request for /readonly/vendor/firmware_mnt/image/wlanmdsp.mbn
+  tqftpserv: failed to open remoteproc class
+  unable to open ... wlanmdsp.mbn
+
+Patched source:
+  /tmp/tqftpserv-src/translate.c
+
+Two changes were required:
+1. Preserve the complete custom firmware path read from `/sys/module/firmware_class/parameters/path`; trim only an actual newline.
+2. Before scanning `/sys/class/remoteproc`, directly try `<custom-firmware-path>/<requested-relative-file>`.
+
+Built live binary:
+  /tmp/tqftpserv-downstream
+
+With the custom firmware tree at `/run/billie2-firmware`, patched tqftpserv served:
+  /readonly/vendor/firmware_mnt/image/wlanmdsp.mbn
+  size 3892648 bytes
+  507 acknowledged TFTP blocks
+
+After transfer:
+  qrtr-lookup showed service 69, version 1, instance 0: ATH10k WLAN firmware service
+  service-notifier reported msm/modem/wlan_pd up
+  ICNSS logged `QMI Server Connected: state: 0x580`
+
+However, no `WLAN FW is ready`/FW_READY indication appeared and writing ON to `/dev/wlan` still timed out. The next investigation must start from ICNSS QMI state 0x580: inspect the indication registration/MSA handshake and determine which state bit or firmware response is missing after successful wlanmdsp transfer.
+
+Further state decoding:
+- ICNSS state enum bits: bit 0 WLFW_CONNECTED, bit 1 POWER_ON, bit 2 FW_READY, bit 7 SSR_REGISTERED, bit 8 PDR_REGISTERED, bit 9 PD_RESTART, bit 10 WLFW_EXISTS, bit 13 FW_DOWN.
+- Before a manual modem restart, ICNSS reported state `0x2583`, which includes WLFW_CONNECTED, POWER_ON, PD_RESTART/WLFW_EXISTS-related state, and critically FW_DOWN, but not FW_READY.
+- On reconnect it logged `QMI Server Connected: state: 0x782`, then `Invalid Hang Data details, Offset:0x0, Length:0x0`.
+- This points to the WLAN firmware entering a failure/rejuvenation path after transfer/QMI publication, rather than a remaining transport or missing-file problem.
+
+Installed vendor identity:
+  ro.product.vendor.device=OnePlusN100
+  ro.product.vendor.model=BE2013
+  ro.vendor.build.fingerprint=OnePlus/OnePlusN100_EEA/OnePlusN100:10/QKQ1.200719.002/2010311929:user/release-keys
+
+This is the EEA BE2013 OxygenOS 10-era vendor baseline and appears consistent with the Ubuntu Touch port's stated supported EU firmware family. The next investigation should focus on why WLFW transitions to FW_DOWN immediately after QMI connection: indication registration/MSA setup response, WLAN PD crash/rejuvenation reason, reserved-memory/MSA permissions, or a subtle modem/vendor firmware mismatch.
+
+2026-10-29 LATEST EXPERIMENTS
+=============================
+The rejuvenation hypothesis was tested without flashing. A tiny module changed the
+global ICNSS `quirks` value at runtime. `/proc/kallsyms` exposed the initialized
+global symbol as:
+  ffffff8009f64dc0 D quirks
+The address is stable on the tested boots, but future work must discover it from
+`/proc/kallsyms`, not hard-code it.
+
+Setting quirks from `0x80` (FW_REJUVENATE_ENABLE) to `0` removed FW_DOWN and
+rejuvenation state but did not produce FW_READY. Detailed IPC logs proved that
+the transport and most of the ICNSS handshake are working:
+  - WLFW server arrives at QRTR node 0 port 83.
+  - indication registration succeeds.
+  - MSA memory info sends two regions at 0x51900000 totaling 0x100000.
+  - MSA ready request succeeds and MSA Ready Indication arrives.
+  - capability query succeeds.
+  - chip_id 0x120, family 0x4007, board_id 0xff, soc_id 0x40670000.
+  - firmware WLAN.HL.3.2.4.c2.1-00007-QCAHLSWMTP, timestamp 2020-10-22.
+  - firmware still never sends QMI_WLFW_FW_READY_IND.
+`Invalid Hang Data details, Offset:0x0, Length:0x0` accompanies MSA ready but is
+not evidence of a firmware crash by itself. The earlier conclusion that the
+firmware immediately entered rejuvenation/FW_DOWN was disproved.
+
+Kernel rebuild warning:
+Changing `ICNSS_QUIRKS_DEFAULT` to zero and rebuilding Image produced a boot
+image that immediately entered Qualcomm CrashDump. Do not boot:
+  /tmp/nura-billie2-no-rejuvenation.img
+Continue using:
+  /tmp/nura-billie2-clean-boot.img
+The runtime override module avoids replacing the known-good kernel:
+  device: /usr/local/lib/icnss_quirk_override.ko
+  host source: /tmp/icnss-quirk-override/
+
+Forced-ready experiment:
+Setting quirks to `4` (`BIT(SKIP_QMI)`) before loading WLAN forces ICNSS to set
+FW_READY and call the qcacld probe. The stock WLAN module then reaches probe but
+fails because IPA reports SMMU disabled while WLAN reports SMMU enabled:
+  SMMU mismatch; IPA:disabled, WLAN:enabled
+  Driver probe failed: -14
+
+A locally rebuilt qcacld module changed that mismatch from fatal to a warning and
+continued with IPA SMMU mapping disabled:
+  device: /usr/local/lib/qca_cld3_wlan_smmu.ko
+  host: /tmp/kernel-oneplus-sm4250/drivers/staging/qcacld-3.0/wlan.ko
+  source change: core/cds/src/cds_api.c, cds_smmu_mem_map_setup()
+This reached HIF/CE IRQ setup and WMI attach. It then failed because firmware was
+not genuinely ready:
+  QMI Config request rejected, result:1 error:90
+  Failed to complete BMI phase, status:16
+No wlan0 was created. SKIP_QMI is therefore a diagnostic only, not a fix.
+
+Current device state:
+  - booted to the graphical system with known-good kernel
+  - USB SSH works after cable reconnect
+  - experimental qrtr/pd-mapper/tqftp/rmtfs sequence was started manually
+  - experimental Wi-Fi OpenRC service remains disabled
+  - locally rebuilt WLAN module is not suitable for normal boot
+  - reboot before the next WLAN attempt; never rmmod the partial WLAN driver
+
+Next investigation:
+Determine why firmware acknowledges indication registration, MSA ready, and
+capability but omits QMI_WLFW_FW_READY_IND. Compare the exact downstream ICNSS
+handshake and firmware files against the working Ubuntu Touch/Halium boot,
+especially any Android service or property that acts between capability response
+and FW_READY. Capture the working Ubuntu Touch ICNSS IPC log if possible. Do not
+work around FW_READY with SKIP_QMI; the BMI timeout proves that the firmware has
+not reached the required execution state.
+
+UBUNTU TOUCH IPA DISCOVERY
+==========================
+The upstream Ubuntu Touch billie2 port contains:
+  overlay/system/etc/init/ipa_fws.conf
+Source:
+  https://gitlab.com/ubports/porting/community-ports/android10/oneplus-nord-n100/oneplus-billie2
+It waits for `/vendor`, checks `/vendor/firmware/ipa_fws.mdt`, and writes `1` to
+`/dev/ipa`. This was missing from the native Alpine startup.
+
+On Nura, the native sequence must first point firmware_class at vendor firmware:
+  printf %s /vendor/firmware > /sys/module/firmware_class/parameters/path
+  printf '1\n' > /dev/ipa
+Without setting the firmware path first, the write blocks in the kernel fallback
+loader. With the correct path, dmesg proves:
+  ipa_fws: loading from 0x56100000 to 0x56105000
+  ipa_fws: Brought out of reset
+and `rmnet_ipa0` appears.
+
+After IPA firmware is loaded, a forced stock qcacld probe reports:
+  SMMU S1 enabled
+This conclusively fixes the earlier IPA:disabled/WLAN:enabled mismatch without a
+locally patched WLAN module. Keep the stock OxygenOS module.
+
+However, forcing SKIP_QMI is still invalid. Even with IPA firmware and the stock
+matching qcacld module, the firmware rejects the premature config request:
+  QMI Config request rejected, result:1 error:90
+  Failed to complete BMI phase, status:16
+Therefore the sole remaining blocker before wlan0 is genuine
+QMI_WLFW_FW_READY_IND. IPA initialization is a required fix, but not sufficient.

@@ -1,0 +1,75 @@
+maintainer="Alexandre MINETTE <contact@alex-min.fr>"
+_flavor="postmarketos-qcom-apq8064"
+pkgname=linux-postmarketos-qcom-apq8064
+pkgver=7.2
+pkgrel=0
+_commit="9e4514751f87a2f2034c6707396794a74337866c"
+pkgdesc="Mainline Kernel fork for APQ8064 devices"
+url="https://github.com/apq8064-mainline/linux"
+arch="armv7"
+_carch="arm"
+license="GPL-2.0-only"
+options="
+	!check
+	!strip
+	!tracedeps
+	pmb:cross-native
+	pmb:kconfigcheck-community
+"
+makedepends="
+	bison
+	clang
+	elfutils-dev
+	findutils
+	flex
+	linux-headers
+	lld
+	llvm
+	openssl-dev
+	pahole
+	perl
+	postmarketos-installkernel
+	python3
+	xz
+	zstd
+"
+_config="config-$_flavor.$arch"
+_tag="qcom-apq8064-v${pkgver/_/-}"
+
+# Source
+source="
+	https://github.com/apq8064-mainline/linux/archive/$_tag/$_commit.tar.gz
+	$_config
+"
+builddir="$srcdir/linux-qcom-apq8064-v7.2"
+
+prepare() {
+	default_prepare
+	cp "$srcdir/config-$_flavor.$arch" .config
+}
+
+build() {
+	unset LDFLAGS
+	make ARCH="$_carch" LLVM=1 \
+		KBUILD_BUILD_VERSION="$((pkgrel + 1 ))-$_flavor"
+}
+
+package() {
+	mkdir -p "$pkgdir"/boot
+	make zinstall modules_install dtbs_install \
+		ARCH="$_carch" \
+		LLVM=1 \
+		INSTALL_PATH="$pkgdir"/boot/ \
+		INSTALL_MOD_PATH="$pkgdir"/usr \
+		INSTALL_MOD_STRIP=1 \
+		INSTALL_DTBS_PATH="$pkgdir"/boot/dtbs
+	rm -f "$pkgdir"/usr/lib/modules/*/build "$pkgdir"/usr/lib/modules/*/source
+
+	install -D "$builddir"/include/config/kernel.release \
+		"$pkgdir"/usr/share/kernel/"$_flavor"/kernel.release
+}
+
+sha512sums="
+1d676d559e9c948de4f632b1f3072bbc72f439785dff558ee95801485f3fa49f436a2dccc5f476d4d4ef2f1146c6c7abe43fd6dac029386cbd60c840b32467d3  9e4514751f87a2f2034c6707396794a74337866c.tar.gz
+a1b77bf63f8b2d68b6aab6f769599c0c2d09f1b6ddddf75dcafa3a1ce5cd00cf067fb2f3045d3816d511f4cb99afcf4a9683e9bc405e52ba638ef2afb7b13d3f  config-postmarketos-qcom-apq8064.armv7
+"

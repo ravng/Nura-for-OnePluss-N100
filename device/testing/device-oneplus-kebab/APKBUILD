@@ -1,0 +1,49 @@
+# Reference: <https://nura.eco/devicepkg>
+maintainer="Frieder Hannenheim <git@fhannenheim.net>"
+pkgname=device-oneplus-kebab
+pkgdesc="OnePlus 8T"
+pkgver=7
+pkgrel=0
+url="https://nura.eco"
+license="MIT"
+arch="aarch64"
+options="!check !archcheck"
+depends="
+	alsa-ucm-conf-oneplus-kebab
+	firmware-oneplus-kebab
+	linux-postmarketos-qcom-sm8250
+
+	mkbootimg
+	postmarketos-base
+	soc-qcom
+	soc-qcom-qbootctl
+	make-dynpart-mappings
+	unl0kr-fbforcerefresh
+"
+makedepends="
+	devicepkg-dev
+	dtc
+"
+source="
+	deviceinfo
+	modules-initfs
+	sm8250-oneplus-kebab-empty.dts
+"
+
+build() {
+	devicepkg_build $startdir $pkgname
+
+	dtc -O dtb -o "$srcdir/dtbo.img" -I dts "$srcdir/sm8250-oneplus-kebab-empty.dts"
+}
+
+package() {
+	devicepkg_package $startdir $pkgname
+
+	install -Dm644 "$srcdir/dtbo.img" "$pkgdir/boot/dtbo.img"
+}
+
+sha512sums="
+ea40d9bbd1ed3f02fddfd2a2ecb08afdca98efdf5d1120303dbbb6d445685dc58a7fe7233134600d5d920f6c3fc6fbe7ddab62d917016b23f4d990fe0d9c600c  deviceinfo
+25feb39581509aa5b17fcc287c4b27d9b6fb0e23cf6de159d7a0c4250a917361a0cec58d9e14d813e634ccfec5abe2a6b16c4bad13998c9fd7ef6bc0547e3cc9  modules-initfs
+fa4866865dd9e6388b7ee2319954d2317245c5618a0ebd9250abae7d58e08aa4a248a6dd9a87a820b30615b8f9f6e5f66b6883a47f7f0d3d69bfffe3440f33b2  sm8250-oneplus-kebab-empty.dts
+"

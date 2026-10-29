@@ -1,0 +1,15 @@
+#!/sbin/openrc-run
+
+# Android camera uevents can leave v4l_id blocked in uninterruptible sleep.
+# Device nodes are populated asynchronously; waiting for the global udev queue
+# would prevent every default-runlevel service from starting.
+depend() {
+	need udev
+	after udev-trigger
+	provide dev-settle
+}
+
+start() {
+	ebegin "Skipping global udev queue settle on billie2"
+	eend 0
+}

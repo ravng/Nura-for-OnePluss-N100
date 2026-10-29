@@ -1,0 +1,93 @@
+# Reference: <https://postmarketos.org/devicepkg>
+maintainer=""
+pkgname=device-oneplus-billie2-downstream
+pkgdesc="OnePlus Nord N100 (Ubuntu Touch downstream kernel)"
+pkgver=5
+pkgrel=6
+url="https://gitlab.com/ubports/porting/community-ports/android10/oneplus-nord-n100/oneplus-billie2"
+license="MIT"
+arch="aarch64"
+options="!check !archcheck"
+depends="
+	linux-oneplus-billie2-downstream
+	mkbootimg
+	msm-firmware-loader
+	postmarketos-base
+	soc-qcom
+"
+makedepends="devicepkg-dev"
+_adaptation_commit="3ed93c9d8bf0808cdce1d7d9ec5eb4536c26ff3d"
+source="
+	deviceinfo
+	kernel-cmdline.conf
+	udev-settle.conf
+	udev-settle
+	phoc.ini
+	billie2-touch-resume
+	billie2-touch-resume.initd
+	billie2-touch-resume.ko
+	bwrap-4.19
+	greetd-config.toml
+	libphosh-4.19.so
+	phosh-billie2.desktop
+	$pkgname-$_adaptation_commit.dtb::$url/-/raw/$_adaptation_commit/nord_n100.dtb
+	$pkgname-$_adaptation_commit-dtbo.img::$url/-/raw/$_adaptation_commit/dtbo.img
+"
+subpackages="$pkgname-phosh"
+
+build() {
+	devicepkg_build $startdir $pkgname
+}
+
+package() {
+	devicepkg_package $startdir $pkgname
+
+	install -Dm644 "$srcdir/$pkgname-$_adaptation_commit.dtb" \
+		"$pkgdir/boot/dtbs/nord_n100.dtb"
+	install -Dm644 "$srcdir/$pkgname-$_adaptation_commit-dtbo.img" \
+		"$pkgdir/boot/dtbo.img"
+	install -Dm644 "$srcdir/udev-settle.conf" \
+		"$pkgdir/etc/conf.d/udev-settle"
+	install -Dm755 "$srcdir/udev-settle" \
+		"$pkgdir/etc/init.d/udev-settle"
+}
+
+phosh() {
+	install_if="$pkgname=$pkgver-r$pkgrel postmarketos-ui-phosh"
+	install="$subpkgname.post-install"
+	install -Dm644 "$srcdir/phoc.ini" "$subpkgdir/etc/phosh/phoc.ini"
+	install -Dm644 "$srcdir/greetd-config.toml" \
+		"$subpkgdir/etc/phrog/greetd-config.toml"
+	install -Dm644 "$srcdir/phosh-billie2.desktop" \
+		"$subpkgdir/usr/local/share/wayland-sessions/phosh.desktop"
+	# libappstream's asynchronous cache load crashes on this 4.19 kernel.
+	install -Dm755 "$srcdir/libphosh-4.19.so" \
+		"$subpkgdir/usr/lib/libphosh-0.45.so.0"
+	install -Dm755 "$srcdir/bwrap-4.19" "$subpkgdir/usr/local/bin/bwrap"
+	install -Dm644 "$srcdir/billie2-touch-resume.ko" \
+		"$subpkgdir/lib/modules/4.19.95-perf+/extra/billie2-touch-resume.ko"
+	install -Dm755 "$srcdir/billie2-touch-resume" \
+		"$subpkgdir/usr/libexec/billie2-touch-resume"
+	install -Dm755 "$srcdir/billie2-touch-resume.initd" \
+		"$subpkgdir/etc/init.d/billie2-touch-resume"
+	mkdir -p "$subpkgdir/etc/runlevels/default"
+	ln -s /etc/init.d/billie2-touch-resume \
+		"$subpkgdir/etc/runlevels/default/billie2-touch-resume"
+}
+
+sha512sums="
+60974441a4f33cd6a3029abb8bb5eab41f82ef7fa0b41511c6d9c02e8855fe71929fdea77672532894a4825a9f4dbc37dd21c0d6da990c531616b5761f90aaf3  deviceinfo
+4bc72fb80c18e99c656039f1bcfbdf7c4168e03a5ff5251de650b77e070d52797d68324d2b61f121e475a8370bb66bebf7db2dbf09fc5db75745a5e1f859d2de  kernel-cmdline.conf
+1ffcbbda9ad02faa8f8b44c9364f35d2dac3b38396a33a6c37a23fcf6391c229452fbabf2f033a3d4470c2cb3202e12bd8ee4873b97891d28841fad424de19e2  udev-settle.conf
+dc025755aad9040a4ace13c843638df5b7b3a7b9abb76ac5cae357704b966e0fd593661fbf1ed1e6f2eaef8cc7a3ef4fb5faa028dc2ea76b1e3b10df74b1c349  udev-settle
+ae5a7c665d5a5f921c1de470503390b0b92b9a0e93525f285b186e3179beb73ffdf48187f809539573480e4cea426250d15dbd9ea597fbfd4966878a8e46b509  phoc.ini
+306870a63e012650bde02463d0fe5aed505f22fb44a1e0fd0bf5a4d9750918d1036a9abea4d25dd07b6eff920f2a3ccb83dfe8397d1ca7a6dac3b65f64424db5  billie2-touch-resume
+e666e3f57973394378ca7823b28166cce180abbfc4ba425daf0513b79f9d47b746776a0fdb668eb7191abdb91d287d8600c9c36aca2c130a74df0ce71fec7ba1  billie2-touch-resume.initd
+4b74724dacaff5676c6923045f8350301b20f90fceb10fe5f70cd7465675e0eb4c03140cbaec8cdf9041bf5d2c93b768c7ac11598a6b0bb5faf36a08f5aa770b  billie2-touch-resume.ko
+b639c325b735f8fd3998d709525956dc6383244852cb8792e5ab1d50f76be9a3294ccb1c93c1fe4333c890255cb8f2c8564407216642404a84c6b0f8a1735d64  bwrap-4.19
+d9aebae3723ccccc43b852658668f260e890784ff11ec368c592f3f3f52121c69213aee472c00cf620a095faf04ebf7b5aa71298dc7942fd08514b1c64999707  greetd-config.toml
+5168376bb664a6539d22ab874fe7f6c61c121692c5405a4578b03f1631fe92d821990372274150a31f52fab0fabc09bbfb5400fe4800c864b0eefef54b7894f7  libphosh-4.19.so
+1ca53b0c0e19aa143256ad83c905d4f184737fe77156de50fb4c1b5ef23d20d9ec767998a56f5d20e50cf601b684bba63482541087af70f1cbe45fd6b12bb230  phosh-billie2.desktop
+1569d1b241d9bd7edaa68e58978ee5a7191d355538ea3e2a3156eab9fa59c48b43af81beea2043d590de7ad86c7e31e014247aebe168f238f2d77828b5ecfcad  device-oneplus-billie2-downstream-3ed93c9d8bf0808cdce1d7d9ec5eb4536c26ff3d.dtb
+69a316950ed54097e7feb558f0dd8279db13d19f9200f88b824d5295010e9388dd1376238d3e9664d25c40e649586e3c1f313fb9cf6942097f1ce96144856441  device-oneplus-billie2-downstream-3ed93c9d8bf0808cdce1d7d9ec5eb4536c26ff3d-dtbo.img
+"

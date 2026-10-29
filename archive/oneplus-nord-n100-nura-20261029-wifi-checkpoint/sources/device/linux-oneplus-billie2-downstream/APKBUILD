@@ -1,0 +1,72 @@
+# Reference: <https://postmarketos.org/vendorkernel>
+# Kernel config based on: arch/arm64/configs/nord_n100_defconfig
+
+maintainer=""
+pkgname=linux-oneplus-billie2-downstream
+pkgver=4.19.95
+pkgrel=1
+pkgdesc="OnePlus Nord N100 Ubuntu Touch kernel fork"
+arch="aarch64"
+_carch="arm64"
+_flavor="oneplus-billie2-downstream"
+url="https://gitlab.com/ubports/porting/community-ports/android10/oneplus-nord-n100/kernel-oneplus-sm4250"
+license="GPL-2.0-only"
+options="!strip !check !tracedeps pmb:cross-native"
+makedepends="
+	bash
+	bc
+	bison
+	clang
+	devicepkg-dev
+	findutils
+	flex
+	linux-headers
+	openssl-dev
+	perl
+	xz
+"
+
+export CC="clang"
+export HOSTCC="clang"
+
+_repository="kernel-oneplus-sm4250"
+_commit="4cc850f635a5764bae2bdd250137b79d736b4eb2"
+_config="config-$_flavor.$arch"
+source="
+	$pkgname-$_commit.tar.gz::$url/-/archive/$_commit/$_repository-$_commit.tar.gz
+	$_config::$url/-/raw/$_commit/arch/arm64/configs/nord_n100_defconfig
+	remove-gcc-python-wrapper.patch
+	Revert-selinux-Relocate-ss_initialized-and-selinux_e.patch
+	fix-clang-implicit-function-types.patch
+"
+builddir="$srcdir/$_repository-$_commit"
+_outdir="out"
+
+prepare() {
+	default_prepare
+	REPLACE_GCCH=0 . downstreamkernel_prepare
+}
+
+build() {
+	unset LDFLAGS
+	make O="$_outdir" ARCH="$_carch" CC="${CC:-gcc}" \
+		KBUILD_BUILD_VERSION="$((pkgrel + 1 ))-postmarketOS"
+}
+
+package() {
+	KERNEL_IMAGE_NAME="Image.gz" downstreamkernel_package \
+		"$builddir" "$pkgdir" "$_carch" "$_flavor" "$_outdir"
+
+	make O="$_outdir" ARCH="$_carch" CC="${CC:-gcc}" \
+		INSTALL_MOD_PATH="$pkgdir" INSTALL_MOD_STRIP=1 \
+		modules_install
+	rm -f "$pkgdir"/lib/modules/*/build "$pkgdir"/lib/modules/*/source
+}
+
+sha512sums="
+e383f13cddd4ead02b46145e19a6898ee781f7a75a45703fab2d3faaebc9adfb5140f628c3bcc68bc4e0514a1b3da3e634ed9110b4c928bf0d6be956b57bd684  linux-oneplus-billie2-downstream-4cc850f635a5764bae2bdd250137b79d736b4eb2.tar.gz
+f6752d6a05c79aa70ddc1b016dffd8b0953b9edc5dcbc4290d388f9f963270f847bc0472d83254c9e6ecfff67e034da326373a8e0ed8fe860c2c949ccb2a48ac  config-oneplus-billie2-downstream.aarch64
+96aa4f9d60e834261984418ed6061f8c9bbdab5ad17b2f6408de3306c233a4c7e8cc2a6c8bacd81abd58af123aa8a463706a11c7d7ae782232e65b77774f76f7  remove-gcc-python-wrapper.patch
+16459200092a2fa68054a758ad8fb175c86e6cdaa49e81c0c91568082cd0348526d43b9dfe0faac8b21465240f44253683f9c475c6f7350d7ef74149aa9c1dba  Revert-selinux-Relocate-ss_initialized-and-selinux_e.patch
+1b12cd970ccaaf35e777c81aaf583c9c4c57603ed765ec241f022059fd019f9d4ce6d891172ca9dc9c8b517ba61a7890ba7f36d2ffec108f366fb20763e58fa1  fix-clang-implicit-function-types.patch
+"

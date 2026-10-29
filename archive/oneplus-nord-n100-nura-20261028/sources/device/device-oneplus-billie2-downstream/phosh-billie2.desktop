@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Phosh
+Comment=Phone Shell
+Exec=env WLR_RENDERER=pixman phosh-session
+Type=Application
+DesktopNames=Phosh;GNOME;

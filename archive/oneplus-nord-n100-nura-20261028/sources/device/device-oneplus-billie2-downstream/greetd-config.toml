@@ -1,0 +1,6 @@
+[terminal]
+vt = 7
+
+[default_session]
+command = "env WLR_RENDERER=pixman /usr/libexec/phrog-greetd-session"
+user = "greetd"

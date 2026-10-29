@@ -1,0 +1,14 @@
+alpine-baselayout
+alpine-keys
+alpine-release
+apk-tools
+busybox
+mkbootimg
+msm-firmware-loader
+musl-utils
+openssh
+postmarketos-base
+postmarketos-ui-console
+postmarketos-ui-phosh
+soc-qcom
+squeekboard

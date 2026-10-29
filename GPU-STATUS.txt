@@ -1,0 +1,103 @@
+ONEPLUS NORD N100 (BILLIE2) GPU BRING-UP
+========================================
+Date: 2026-10-29
+Current safe UI: Phoc/Phosh with WLR_RENDERER=pixman
+Result: hardware Vulkan enumeration works; accelerated graphical session does not yet work.
+
+PROVEN ON THE PHYSICAL PHONE
+----------------------------
+- GPU: Qualcomm Adreno 610.
+- Android GPU character device: /dev/kgsl-3d0.
+- Display DRM device: /dev/dri/card0; render node: /dev/dri/renderD128.
+- The downstream display driver identifies as msm_drm / qcom,sde-kms.
+- /vendor/firmware/a630_sqe.fw and a610_zap.* are present after mounting
+  /dev/mapper/vendor_a read-only at /vendor.
+- Writing /vendor/firmware to
+  /sys/module/firmware_class/parameters/path lets KGSL load a630_sqe.fw.
+- Mesa 26.2.5 Turnip compiled with -Dfreedreno-kmds=kgsl opens
+  /dev/kgsl-3d0 and reports:
+    Turnip Adreno (TM) 610
+    Vulkan API 1.0.354
+    Mesa driver 26.2.5
+- The installed system Mesa was compiled for freedreno KMDs msm,virtio only.
+  It cannot drive this old downstream DRM render node and falls back to llvmpipe.
+
+TEST ARTIFACTS ON THE PHONE
+---------------------------
+- Mesa source: /home/nura/gpu-build/mesa-26.2.5
+- Minimal Turnip build: /home/nura/gpu-build/build
+- EGL/Gallium/Turnip build: /home/nura/gpu-build/build-gl
+- EGL/Gallium/Turnip install: /home/nura/gpu-build/install-gl
+- Proven custom Vulkan ICD:
+  /home/nura/gpu-build/build/src/freedreno/vulkan/freedreno_devenv_icd.aarch64.json
+
+REPRODUCE THE SUCCESSFUL HARDWARE TEST
+--------------------------------------
+1. Mount vendor and initialize firmware access if not already done:
+
+   sudo mkdir -p /vendor
+   sudo mount -o ro /dev/mapper/vendor_a /vendor
+   echo /vendor/firmware | sudo tee /sys/module/firmware_class/parameters/path
+   sudo chgrp video /dev/kgsl-3d0 /dev/ion
+   sudo chmod 0660 /dev/kgsl-3d0 /dev/ion
+
+2. Enumerate the hardware Vulkan device:
+
+   VK_DRIVER_FILES=/home/nura/gpu-build/build/src/freedreno/vulkan/freedreno_devenv_icd.aarch64.json \
+   TU_DEBUG=startup vulkaninfo --summary
+
+Expected evidence includes both:
+   Found compatible device '/dev/kgsl-3d0'
+   Turnip Adreno (TM) 610
+
+FAILED INTEGRATION TESTS AND MEANING
+------------------------------------
+- A custom Gallium Freedreno build with freedreno-kmds=kgsl does not initialize
+  EGL on Linux. KGSL Gallium/EGL support is tied to Mesa's Android platform;
+  merely adding kgsl_dri.so does not create a usable Linux GBM/EGL backend.
+- Phoc contains wlroots' Vulkan renderer, but a nested Wayland backend fails:
+    Cannot create Vulkan renderer: no DRM FD available
+- Direct wlroots Vulkan rendering requires a Vulkan physical device associated
+  with the display DRM FD. KGSL Turnip is attached to /dev/kgsl-3d0, while the
+  display is /dev/dri/card0; this route cannot join those devices as-is.
+- vkcube --wsi wayland selects Turnip Adreno 610, then cannot negotiate a
+  presentable format with the Pixman compositor. No accelerated surface was
+  demonstrated.
+- Keep WLR_RENDERER=pixman in both the greeter and authenticated Phosh session.
+  Removing it returns login to the previously observed renderer failure.
+
+WHY UBUNTU TOUCH IS NOT A DROP-IN FIX
+-------------------------------------
+Ubuntu Touch uses the Android/Halium graphics route: proprietary Android
+Adreno EGL/GLES libraries behind libhybris, Android gralloc/KGSL services, and
+Mir, in a glibc environment. Nura currently uses musl, Mesa, GBM, wlroots, and
+Phoc. libhybris does not provide Phoc/wlroots with the GBM renderer it expects.
+The ICD from the larger build-gl/install-gl build returned
+VK_ERROR_INITIALIZATION_FAILED during a later headless enumeration; use the
+minimal build ICD above as the known-good hardware-enumeration oracle.
+The Ubuntu path proves this hardware and vendor firmware work, but reproducing
+it requires adopting a compatible Halium/libhybris/Mir compositor path rather
+than copying vendor libraries into the current process.
+
+NEXT VIABLE ROUTES
+------------------
+1. Lowest kernel/userspace mismatch: reproduce Ubuntu Touch's glibc Halium +
+   libhybris + Mir graphics stack, then determine whether Nura can run above
+   that compositor. This is the literal Ubuntu path but a substantial UI-stack
+   change.
+2. Best long-term Phoc architecture: move to a kernel/display driver compatible
+   with upstream Mesa's MSM DRM Freedreno path. This risks regressions in the
+   downstream-only touchscreen, modem, Wi-Fi, and panel support.
+3. High-risk engineering route: implement a wlroots renderer/allocator bridge
+   between KGSL Turnip/Android gralloc and downstream MSM DRM. No existing
+   bridge was found in the current stack.
+
+PACKAGING STILL REQUIRED AFTER A WORKING GRAPHICAL ROUTE EXISTS
+---------------------------------------------------------------
+- Mount vendor read-only early enough for GPU initialization.
+- Persist firmware lookup without breaking modem/Wi-Fi firmware lookup.
+- Install 70-billie2-gpu.rules for video-group access to kgsl-3d0 and ion.
+- Package the chosen graphics libraries side-by-side first; preserve a Pixman
+  recovery session until accelerated login, lock/unlock, and resume are stable.
+- Verify visible login, Phosh session, touch, lock/unlock, repeated app launch,
+  suspend/resume, and thermal stability on the physical device.

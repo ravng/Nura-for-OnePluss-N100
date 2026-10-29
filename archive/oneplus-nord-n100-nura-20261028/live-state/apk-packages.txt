@@ -1,0 +1,856 @@
+abseil-cpp-base-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-base
+abseil-cpp-city-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-city
+abseil-cpp-cord-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-cord
+abseil-cpp-cord-internal-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-cord-internal
+abseil-cpp-cordz-functions-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-cordz-functions
+abseil-cpp-cordz-handle-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-cordz-handle
+abseil-cpp-cordz-info-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-cordz-info
+abseil-cpp-crc-cord-state-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-crc-cord-state
+abseil-cpp-crc-internal-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-crc-internal
+abseil-cpp-crc32c-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-crc32c
+abseil-cpp-debugging-internal-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-debugging-internal
+abseil-cpp-die-if-null-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-die-if-null
+abseil-cpp-examine-stack-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-examine-stack
+abseil-cpp-exponential-biased-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-exponential-biased
+abseil-cpp-hash-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-hash
+abseil-cpp-hashtablez-sampler-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-hashtablez-sampler
+abseil-cpp-int128-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-int128
+abseil-cpp-kernel-timeout-internal-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-kernel-timeout-internal
+abseil-cpp-leak-check-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-leak-check
+abseil-cpp-log-globals-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-log-globals
+abseil-cpp-log-initialize-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-log-initialize
+abseil-cpp-log-internal-check-op-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-log-internal-check-op
+abseil-cpp-log-internal-conditions-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-log-internal-conditions
+abseil-cpp-log-internal-format-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-log-internal-format
+abseil-cpp-log-internal-globals-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-log-internal-globals
+abseil-cpp-log-internal-log-sink-set-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-log-internal-log-sink-set
+abseil-cpp-log-internal-message-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-log-internal-message
+abseil-cpp-log-internal-nullguard-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-log-internal-nullguard
+abseil-cpp-log-internal-proto-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-log-internal-proto
+abseil-cpp-log-internal-structured-proto-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-log-internal-structured-proto
+abseil-cpp-log-sink-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-log-sink
+abseil-cpp-malloc-internal-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-malloc-internal
+abseil-cpp-raw-hash-set-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-raw-hash-set
+abseil-cpp-raw-logging-internal-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-raw-logging-internal
+abseil-cpp-spinlock-wait-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-spinlock-wait
+abseil-cpp-stacktrace-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-stacktrace
+abseil-cpp-status-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-status
+abseil-cpp-statusor-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-statusor
+abseil-cpp-str-format-internal-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-str-format-internal
+abseil-cpp-strerror-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-strerror
+abseil-cpp-strings-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-strings
+abseil-cpp-strings-internal-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-strings-internal
+abseil-cpp-symbolize-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-symbolize
+abseil-cpp-synchronization-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-synchronization
+abseil-cpp-throw-delegate-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-throw-delegate
+abseil-cpp-time-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-time
+abseil-cpp-time-zone-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-time-zone
+abseil-cpp-tracing-internal-20260817.0-r0 - Abseil Common C++ library: abseil-cpp-tracing-internal
+accountsservice-26.27.3-r0 - D-Bus interface for user account query and manipulation
+acl-libs-2.3.2-r1 - Access control list utilities (libraries)
+adwaita-fonts-51.0-r0 - The typefaces for GNOME
+adwaita-fonts-mono-51.0-r0 - The typefaces for GNOME (Mono)
+adwaita-fonts-sans-51.0-r0 - The typefaces for GNOME (Sans)
+adwaita-icon-theme-51.0-r0 - Adwaita icon theme
+agetty-2.42.4-r3 - agetty program from util-linux
+agetty-openrc-0.63.2-r1 - agetty program from util-linux (OpenRC init scripts)
+alpine-appstream-downloader-0.6-r4 - Sets up AppStream data according to the AppStream specification
+alpine-baselayout-3.7.2-r1 - Alpine base dir structure and init scripts
+alpine-baselayout-data-3.7.2-r1 - Alpine base dir structure and init scripts
+alpine-conf-3.22.0-r0 - Alpine configuration management scripts
+alpine-keys-2.6-r0 - Public keys for Alpine Linux packages
+alpine-release-3.25.0_alpha20260805-r0 - Alpine release data
+alsa-lib-1.2.16.1-r0 - Advanced Linux Sound Architecture (ALSA) library
+alsa-plugins-pulse-1.2.12-r2 - Pulseaudio support plugins for alsa-only applications
+alsa-ucm-conf-1.2.16.1-r0 - ALSA Use Case Manager configuration
+alsa-utils-1.2.16-r0 - Advanced Linux Sound Architecture (ALSA) utilities
+alsa-utils-openrc-1.2.16-r0 - Advanced Linux Sound Architecture (ALSA) utilities (OpenRC init scripts)
+alsa-utils-udev-1.2.16-r0 - Advanced Linux Sound Architecture (ALSA) utilities (udev rules)
+aom-libs-3.15.2-r0 - Alliance for Open Media (AOM) AV1 codec SDK (libraries)
+apk-polkit-rs-3.0.2-r0 - apk-polkit-rs exposes a DBus API for APK, the Alpine Package Keeper
+apk-polkit-rs-openrc-3.0.2-r0 - apk-polkit-rs exposes a DBus API for APK, the Alpine Package Keeper (OpenRC init scripts)
+apk-tools-3.0.7-r0 - Alpine Package Keeper - package manager for alpine
+appstream-1.2.1-r0 - Provides a standard for creating app stores across distributions
+appstream-compose-1.2.1-r0 - Building blocks to compose AppStream metadata
+at-spi2-core-2.62.1-r0 - Protocol definitions and daemon for D-Bus at-spi
+at-spi2-core-libs-2.62.1-r0 - Protocol definitions and daemon for D-Bus at-spi (libraries)
+avahi-0.9_rc5-r1 - multicast/unicast DNS-SD framework
+avahi-glib-0.9_rc5-r1 - Glib libraries and GObject wrapper for avahi
+avahi-libs-0.9_rc5-r1 - Libraries for avahi run-time use
+avahi-openrc-0.9_rc5-r1 - multicast/unicast DNS-SD framework (OpenRC init scripts)
+bash-5.3.9-r2 - The GNU Bourne Again shell
+basu-0.2.1-r2 - The sd-bus library, extracted from systemd
+beebzzr-0_git20251214-r0 - Simple minimal vibration tool
+blake3-libs-1.8.7-r1 - BLAKE3 hash function (libraries)
+blkid-2.42.4-r3 - Block device identification tool from util-linux
+bluez-5.87-r0 - Tools for the Bluetooth protocol stack
+bluez-btmgmt-5.87-r0 - Bluez tool for the Bluetooth Management API
+bluez-deprecated-5.87-r0 - Deprecated bluetooth tools
+bluez-deprecated-openrc-5.87-r0 - Deprecated bluez tools (OpenRC init scripts)
+bluez-openrc-5.87-r0 - Tools for the Bluetooth protocol stack (OpenRC init scripts)
+boot-deploy-0.25.0-r0 - tool for finalizing and deploying boot related files
+bootmac-0.7.1-r2 - Configure MAC addresses at boot
+bridge-1.5-r5 - Scripts for configuring network bridge interfaces
+brotli-libs-1.2.1-r0 - Generic lossless compressor (libraries)
+btrfs-progs-6.17.1-r1 - BTRFS filesystem utilities
+btrfs-progs-openrc-6.17.1-r1 - BTRFS filesystem utilities (OpenRC init scripts)
+btrfs-progs-udev-6.17.1-r1 - BTRFS filesystem utilities (udev rules)
+bubblewrap-0.13.1-r0 - Unprivileged sandboxing tool
+buffyboard-3.6.0-r0 - Touch-enabled framebuffer keyboard (not only) for vampire slayers
+busctl-255.24-r2 - tool for monitoring and introspecting the D-Bus bus
+busybox-1.38.0-r8 - Size optimized toolbox of many common UNIX utilities
+busybox-binsh-1.38.0-r8 - busybox ash /bin/sh
+busybox-extras-1.38.0-r8 - Additional binaries of Busybox
+busybox-mdev-openrc-1.38.0-r8 - Size optimized toolbox of many common UNIX utilities
+busybox-openrc-1.38.0-r8 - Size optimized toolbox of many common UNIX utilities
+bzip2-1.0.8-r6 - A high-quality data compression program
+c-ares-1.34.9-r0 - Asynchronous DNS/names resolver library
+ca-certificates-20261020-r0 - Common CA certificates PEM files from Mozilla
+ca-certificates-bundle-20260611-r0 - Pre generated bundle of Mozilla certificates
+cairo-1.18.4-r1 - A vector graphics library
+cairo-gobject-1.18.4-r1 - A vector graphics library (gobject bindings)
+callaudiod-libs-0.1.99-r0 - Call audio routing daemon (libraries)
+cdparanoia-libs-10.2-r14 - Libraries for libcdda_paranoia (Paranoia III)
+cellbroadcastd-0.0.3-r2 - Manages cell broadcast messages received via ModemManager
+cellbroadcastd-libs-0.0.3-r2 - Manages cell broadcast messages received via ModemManager (libraries)
+cfdisk-2.42.4-r3 - Curses based partition table manipulator from util-linux
+cfitsio-4.7.0-r0 - Library reading and writing data files in Flexible Image Transport System data format
+cgif-0.5.4-r0 - Fast and lightweight GIF encoder written in C
+chrony-4.9-r0 - NTP client and server programs (without NTS and SHA/AES)
+chrony-common-4.9-r0 - NTP client and server programs (common files)
+chrony-openrc-4.9-r0 - NTP client and server programs (OpenRC init scripts)
+colord-1.4.8-r4 - System daemon for managing color devices
+colord-gtk-0.3.1-r0 - GTK support library for colord
+colord-udev-1.4.8-r4 - System daemon for managing color devices (udev rules)
+cracklib-2.10.3-r1 - Library used to enforce strong passwords
+cracklib-words-2.10.3-r1 - Large list of words for crack/cracklib
+cryptsetup-2.8.8-r0 - Userspace setup tool for transparent encryption of block devices using the Linux 2.6 cryptoapi
+cryptsetup-libs-2.8.8-r0 - Cryptsetup shared library
+cryptsetup-openrc-2.8.8-r0 - Userspace setup tool for transparent encryption of block devices using the Linux 2.6 cryptoapi (OpenRC init scripts)
+cups-libs-2.4.20-r1 - CUPS libraries
+cups-pk-helper-0.2.7-r3 - PolicyKit helper to configure cups with fine-grained privileges
+dbus-1.16.2-r4 - Freedesktop.org message bus system
+dbus-daemon-launch-helper-1.16.2-r4 - DBus SUID launch helper for autospawning
+dbus-libs-1.16.2-r4 - D-BUS access libraries
+dbus-openrc-1.16.2-r4 - Freedesktop.org message bus system (OpenRC init scripts)
+dbus-x11-1.16.2-r4 - X11 add-ons for D-BUS
+dconf-51.0-r0 - low-level configuration system
+desktop-file-utils-0.28-r0 - Command line utilities for working with desktop entries
+device-mapper-2.03.35-r8 - Device mapper userspace library and tools from LVM2
+device-mapper-libs-2.03.35-r8 - Device-mapper shared library
+device-mapper-udev-2.03.35-r8 - Device mapper udev rules
+devicepkg-utils-0.3.3-r0 - Utilities for interacting with device packages
+dialog-1.3.20260107-r1 - Script interpreter providing curses widgets
+directfb-1.7.7-r8 - Library for hw graphics acceleration, input dev, windowing system on top of the Linux fb device
+djvulibre-libs-3.5.30-r0 - Utilities and Libraries for the DjVu image format (libraries)
+dmesg-2.42.4-r3 - dmesg tool from util-linux
+dnsmasq-2.93-r0 - A lightweight DNS, DHCP, RA, TFTP and PXE server
+dnsmasq-common-2.93-r0 - A lightweight DNS, DHCP, RA, TFTP and PXE server (common files)
+dnsmasq-openrc-2.93-r0 - A lightweight DNS, DHCP, RA, TFTP and PXE server (OpenRC init scripts)
+dosfstools-4.2-r2 - DOS filesystem utilities
+duktape-libs-2.7.0-r3 - Embeddable Javascript engine with a focus on portability and compact footprint (libraries)
+e2fsprogs-1.47.4-r0 - Standard Ext2/3/4 filesystem utilities
+e2fsprogs-extra-1.47.4-r0 - Ext2/3/4 filesystem extra utilities
+e2fsprogs-libs-1.47.4-r0 - Standard Ext2/3/4 filesystem utilities (libraries)
+elogind-255.24-r2 - Standalone fork of systemd's elogind
+elogind-common-255.24-r2 - common components for elogind and related tools
+elogind-openrc-255.24-r2 - Standalone fork of systemd's elogind (OpenRC init scripts)
+enchant2-libs-2.8.15-r0 - wrapper library for generic spell checking (v2) (libraries)
+esystemd-262-r0 - systemd meta package for OpenRC-specific binaries and configs
+esystemd-sysusers-262-r0 - systemd-sysusers (external)
+esystemd-sysusers-openrc-262-r0 - systemd-sysusers (external) (OpenRC init scripts)
+esystemd-tmpfiles-262-r0 - systemd-tmpfiles (external)
+esystemd-tmpfiles-openrc-262-r0 - systemd-tmpfiles (external) (OpenRC init scripts)
+eudev-9999.3.2.14-r7 - init system agnostic fork of systemd-udev
+eudev-libs-3.2.14-r8 - Dynamic library to access udev device information
+eudev-openrc-9999.3.2.14-r7 - init system agnostic fork of systemd-udev (OpenRC init scripts)
+evince-libs-48.4-r1 - Simple document viewer for GTK+ (libraries)
+evolution-data-server-3.62.0-r2 - data server for evolution
+f2fs-tools-1.17.0-r0 - Tools for the Flash-Friendly File System (F2FS)
+f2fs-tools-libs-1.17.0-r0 - Tools for the Flash-Friendly File System (F2FS) (libraries)
+faac-1.31.1-r0 - FAAC is an AAC audio encoder.
+faad2-libs-2.11.2-r0 - ISO AAC audio decoder (libraries)
+fdk-aac-2.0.2-r4 - Fraunhofer FDK AAC codec library
+feedbackd-0.8.10-r0 - Daemon to provide haptic, LED, and audio feedback triggered by application events
+feedbackd-device-themes-0.8.9-r0 - Feedbackd device themes for different devices
+feedbackd-udev-0.8.10-r0 - Daemon to provide haptic, LED, and audio feedback triggered by application events (udev rules)
+fftw-double-libs-3.3.11-r0 - Discrete Fourier transform (DFT) library
+fftw-single-libs-3.3.11-r0 - Discrete Fourier transform (DFT) library
+file-5.48-r0 - File type identification utility
+findmnt-2.42.4-r3 - Find mount from util-linux
+flatpak-libs-1.18.4-r0 - Application deployment framework for desktop apps (libraries)
+flite-2.2-r7 - Small, fast speech synthesis engine (text-to-speech)
+flock-2.42.4-r3 - File locker from util-linux
+font-droid-20200215-r5 - General-purpose fonts released by Google as part of Android.
+font-terminus-4.49.1-r4 - Monospace bitmap font (for X11 and console)
+fontconfig-2.18.1-r0 - Library for configuring and customizing font access
+freetype-2.14.3-r0 - TrueType font rendering library
+fribidi-1.0.17-r0 - Free Implementation of the Unicode Bidirectional Algorithm
+fstrim-2.42.4-r3 - File system trim from util-linux
+fuse-common-3.18.3-r0 - Common files for fuse2 and fuse3
+fuse-openrc-3.18.3-r0 - Reference implementation of the Linux FUSE (Filesystem in Userspace) interface (OpenRC init scripts)
+fuse3-3.18.3-r0 - Reference implementation of the Linux FUSE (Filesystem in Userspace) interface
+fuse3-libs-3.18.3-r0 - Reference implementation of the Linux FUSE (Filesystem in Userspace) interface (libraries)
+fuse3-udev-3.18.3-r0 - Reference implementation of the Linux FUSE (Filesystem in Userspace) interface (udev rules)
+fwupd-2.1.8-r0 - Firmware update daemon
+fwupd-openrc-2.1.8-r0 - Firmware update daemon (OpenRC init scripts)
+fwupd-polkit-2.1.8-r0 - Firmware update daemon (polkit integration)
+gcr-3.41.2-r3 - library for bits of crypto UI and parsing
+gcr-base-3.41.2-r3 - library for bits of crypto UI and parsing (base libraries)
+gcr-ssh-agent-4.4.0.1-r1 - Library for bits of crypto UI and parsing (ssh agent daemon)
+gcr4-4.4.0.1-r1 - Library for bits of crypto UI and parsing
+gcr4-base-4.4.0.1-r1 - Library for bits of crypto UI and parsing (base libraries)
+gdbm-1.26-r0 - GNU dbm is a set of database routines that use extensible hashing
+gdk-pixbuf-2.44.8-r0 - GTK+ image loading library
+generate-kernel-cmdline-1.0-r0 - Kernel command line generator using UAPI.6-compliant configuration
+geoclue-2.8.2-r0 - dbus geolocation service
+geocode-glib-3.26.4-r5 - Geocoding helper library
+glib-2.90.0-r0 - Low-level core library that forms the basis for projects such as GTK and GNOME
+glib-networking-2.90.0-r0 - Networking support for GLib
+glycin-heif-2.2.3-r0 - Sandboxed and extendable image decoding (glycin-heif loader)
+glycin-image-rs-2.2.3-r0 - Sandboxed and extendable image decoding (glycin-image-rs loader)
+glycin-jxl-2.2.3-r0 - Sandboxed and extendable image decoding (glycin-jxl loader)
+glycin-loaders-all-2.2.3-r0 - Sandboxed and extendable image decoding (all loaders)
+glycin-svg-2.2.3-r0 - Sandboxed and extendable image decoding (glycin-svg loader)
+glycin-thumbnailer-2.2.3-r0 - Sandboxed and extendable image decoding (thumbnailer)
+gmobile-0.7.4-r0 - Functions useful in mobile related, glib based projects
+gmobile-udev-0.7.4-r0 - Functions useful in mobile related, glib based projects (udev rules)
+gmp-6.3.0-r4 - free library for arbitrary precision arithmetic
+gnome-app-list-2026.08-r0 - App recommendation data for the GNOME project
+gnome-app-provider-gnome-software-14-r1 - Provider that installs GNOME Software
+gnome-backgrounds-51.0.1-r0 - Default wallpaper set for GNOME
+gnome-bluetooth-47.2-r0 - The GNOME Bluetooth Subsystem
+gnome-bluetooth-libs-47.2-r0 - The GNOME Bluetooth Subsystem (libraries)
+gnome-bluetooth-udev-47.2-r0 - The GNOME Bluetooth Subsystem (udev rules)
+gnome-control-center-51.1-r0 - GNOME control center
+gnome-keyring-51.1-r0 - GNOME keyring
+gnome-keyring-openrc-51.1-r0 - GNOME keyring (OpenRC init scripts)
+gnome-keyring-pam-51.1-r0 - PAM module for gnome-keyring
+gnome-online-accounts-3.58.1-r0 - Single sign-on framework for GNOME
+gnome-session-48.0-r5 - GNOME session manager
+gnome-settings-daemon-51.1-r0 - GNOME settings daemon
+gnome-settings-daemon-udev-51.1-r0 - GNOME settings daemon (udev rules)
+gnome-shell-schemas-51.0-r0 - GNOME Shell gsetting schemas
+gnome-software-51.0-r0 - Software lets you install and update applications and system extensions
+gnome-software-lib-51.0-r0 - Software lets you install and update applications and system extensions (shared library)
+gnome-software-plugin-apk2-0.0.3-r1 - Yet Another APK plugin for GNOME Software
+gnupg-dirmngr-2.5.22-r0 - GNU Privacy Guard 2 - network certificate management service
+gnupg-gpgconf-2.5.22-r0 - GNU Privacy Guard 2 - core configuration utilities
+gnupg-keyboxd-2.5.22-r0 - GNU Privacy Guard 2 - keyboxd manager
+gnutls-3.8.13-r0 - TLS protocol implementation
+gobject-introspection-1.86.0-r2 - Introspection system for GObject-based libraries
+gpg-2.5.22-r0 - GNU Privacy Guard 2 - public key operations only
+gpg-agent-2.5.22-r0 - GNU Privacy Guard 2 - cryptographic agent
+gpgme-2.0.1-r1 - gnupg made easy
+gpgsm-2.5.22-r0 - GNU Privacy Guard 2 - S/MIME version
+graphene-1.10.8-r5 - A thin layer of graphic data types
+graphite2-1.3.15-r0 - reimplementation of the SIL Graphite text processing engine
+greetd-0.10.3-r12 - Minimal and flexible login manager daemon
+greetd-openrc-0.10.3-r12 - Minimal and flexible login manager daemon (OpenRC init scripts)
+greetd-phrog-0.53.0-r0 - Mobile device greeter
+greetd-phrog-schemas-0.53.0-r0 - Phrog schema files
+gsettings-desktop-schemas-51.0-r0 - A collection of GSettings schemas
+gsm-1.0.24-r0 - Shared libraries for GSM speech compressor
+gsound-1.0.3-r3 - Small library for playing system sounds
+gspell-1.14.5-r0 - Flexible API to add spell checking to a GTK+ application
+gst-audio-thumbnailer-1.1.0-r0 - Thumbnail generator using GStreamer (audio)
+gst-plugin-pipewire-1.6.9-r0 - Multimedia graph framework - PipeWire plugin
+gst-plugins-bad-1.28.7-r0 - GStreamer streaming media framework bad plug-ins
+gst-plugins-base-1.28.7-r0 - GStreamer streaming media framework base plug-ins
+gst-thumbnailers-1.1.0-r0 - Thumbnail generator using GStreamer
+gst-video-thumbnailer-1.1.0-r0 - Thumbnail generator using GStreamer (video)
+gstreamer-1.28.7-r0 - GStreamer streaming media framework
+gstreamer-ptp-helper-1.28.7-r0 - GStreamer streaming media framework (ptp helper)
+gtk+3.0-3.24.52-r0 - The GTK+ Toolkit (v3)
+gtk-update-icon-cache-3.24.52-r0 - The GTK+ Toolkit (v3)
+gtk4.0-4.24.1-r0 - The GTK Toolkit (v4)
+gweather-locations-2026.2-r0 - GWeather locations database
+harfbuzz-14.2.1-r0 - Text shaping library
+harfbuzz-icu-14.2.1-r0 - Harfbuzz ICU support library
+harfbuzz-subset-14.2.1-r0 - Harfbuzz subset library
+haveged-1.9.26-r0 - Entropy harvesting daemon using CPU timings
+haveged-openrc-1.9.26-r0 - Entropy harvesting daemon using CPU timings (OpenRC init scripts)
+hexdump-2.42.4-r3 - Hexdump from util-linux
+hicolor-icon-theme-0.18-r0 - Freedesktop.org Hicolor icon theme
+hidapi-0.15.0-r0 - Simple library for communicating with USB and Bluetooth HID devices
+hwdata-pci-0.412-r0 - Hardware identification and configuration data (pci data)
+hwdata-usb-0.412-r0 - Hardware identification and configuration data (usb data)
+hwloc-2.12.2-r0 - Portable abstraction of hierarchical hardware architectures
+hyphen-2.8.8-r3 - Library for high quality hyphenation and justification
+ibus-1.5.35_beta2-r0 - Next Generation Input Bus for Linux
+ibus-gtk3-1.5.35_beta2-r0 - Next Generation Input Bus for Linux
+ibus-gtk4-1.5.35_beta2-r0 - Next Generation Input Bus for Linux
+ibus-pyc-1.5.35_beta2-r0 - Precompiled Python bytecode for ibus
+icu-data-en-78.1-r0 - Stripped down ICU data with only en_US/GB locale and no legacy charset converters
+icu-libs-78.1-r0 - International Components for Unicode library (libraries)
+ifupdown-ng-0.13.0-r0 - tools for managing network configuration
+ifupdown-ng-iproute2-0.13.0-r0 - ifupdown-ng integration for iproute2
+ifupdown-ng-wifi-0.13.0-r0 - ifupdown-ng integration for wifi
+iio-sensor-proxy-3.9-r2 - IIO sensors to D-Bus proxy
+iio-sensor-proxy-openrc-3.9-r2 - IIO sensors to D-Bus proxy (OpenRC init scripts)
+iio-sensor-proxy-udev-3.9-r2 - IIO sensors to D-Bus proxy (udev rules)
+imath-3.2.2-r1 - C++ and python library of 2D and 3D vector, matrix, and math operations for computer graphics
+inih-62-r0 - Simple .INI file parser for embedded systems
+iproute2-7.3.0-r0 - IP Routing Utilities
+iproute2-minimal-7.3.0-r0 - IP Routing Utilities (/sbin/ip only)
+iproute2-ss-7.3.0-r0 - IP Routing Utilities (socket statistics tool)
+iproute2-tc-7.3.0-r0 - IP Routing Utilities (traffic control and XDP support)
+iskey-3.6.0-r0 - Tiny tool to check if a key is pressed
+iso-codes-4.20.1-r0 - ISO codes and their translations
+jansson-2.15.1-r0 - lightweight JSON library
+json-c-0.19-r1 - A JSON implementation in C
+json-glib-1.10.8-r0 - JSON library built on GLib
+keyutils-libs-1.6.3-r4 - Key utilities library
+kmod-34.2-r1 - Linux kernel module management utilities
+kmod-libs-34.2-r1 - Linux kernel module management utilities (libraries)
+krb5-conf-1.0-r2 - Shared krb5.conf for both MIT krb5 and heimdal
+krb5-libs-1.22.2-r1 - The shared libraries used by Kerberos 5
+lame-libs-3.100-r5 - An MP3 encoder and graphical frame analyzer (libraries)
+lcms2-2.19.1-r0 - Color Management Engine
+ldb-4.23.10-r0 - Schema-less, ldap like, API and database
+libaccountsservice-26.27.3-r0 - D-Bus interface for user account query and manipulation (libraries)
+libadwaita-1.10.0-r0 - Building blocks for modern GNOME applications
+libapk-3.0.7-r0 - Alpine Package Keeper - package manager for alpine
+libarchive-3.8.10-r0 - library that can create and read several streaming archive formats
+libass-0.17.5-r0 - Portable library for SSA/ASS subtitle rendering
+libassuan-3.0.2-r0 - IPC library used by some GnuPG related software
+libasyncns-0.8-r5 - Asynchronous Name Service Library
+libatasmart-0.19-r4 - ATA S.M.A.R.T. Reading and Parsing Library
+libatk-1.0-2.62.1-r0 - ATK library accessibility interfaces (1.0)
+libatk-bridge-2.0-2.62.1-r0 - GTK+2.0 module that bridges ATK to D-Bus at-spi
+libauth-samba-4.23.10-r0 - Samba auth library shared by common-tools, server and clients
+libavif-1.4.2-r0 - Library for encoding and decoding .avif files
+libblkid-2.42.4-r3 - Block device identification library from util-linux
+libblockdev-3.4.0-r1 - Library for manipulating block devices
+libbpf-1.8.0-r0 - A library for interacting with the Linux kernel's Berkeley Packet Filter (BPF) facility from user space
+libbsd-0.12.2-r0 - commonly-used BSD functions not implemented by all libcs
+libbytesize-2.12-r1 - Library for working with arbitrary big sizes in bytes
+libbz2-1.0.8-r6 - Shared library for bz2
+libcamera-99990.7.2-r4 - Linux camera framework
+libcamera-ipa-99990.7.2-r4 - Linux camera framework
+libcanberra-0.30-r12 - Simple audio library for GTK applications
+libcanberra-gstreamer-0.30-r12 - GStreamer backend for libcanberra
+libcanberra-gtk3-0.30-r12 - GTK+3.0 bindings for libcanberra
+libcanberra-pulse-0.30-r12 - Pulseaudio backend for libcanberra
+libcap-ng-0.9.6-r0 - POSIX capabilities library
+libcap2-2.78-r1 - POSIX 1003.1e capabilities (libraries)
+libcolord-1.4.8-r4 - System daemon for managing color devices (client library)
+libcom_err-1.47.4-r0 - Common error description library
+libcrypto3-3.5.7-r0 - Crypto library from openssl
+libcurl-8.23.0-r0 - The multiprotocol file transfer library
+libdaemon-0.14-r6 - A lightweight C library which eases the writing of UNIX daemons
+libdav1d-1.5.4-r0 - small and fast AV1 Decoder (libraries)
+libdbusmenu-glib-16.04.0-r6 - Library for passing menus over DBus
+libdbusmenu-gtk3-16.04.0-r6 - Library for passing menus over DBus (GTK+3)
+libdc1394-2.2.7-r0 - High level programming interface to control IEEE 1394 based cameras
+libde265-1.1.3-r0 - Open h.265 video codec implementation
+libdeflate-1.26-r0 - Library for fast, whole-buffer DEFLATE-based compression and decompression
+libdisplay-info-0.3.0-r1 - EDID and DisplayID library
+libdrm-2.4.134-r0 - Userspace interface to kernel DRM services
+libdvdcss-1.4.3-r0 - Library for accessing DVDs like a block device without having to bother about the decryption
+libdvdnav-6.1.1-r1 - a library for sophisticated DVD navigation features
+libdvdread-6.1.3-r2 - Simple foundation for reading DVD video disks
+libeconf-0.8.4-r0 - Enhanced Config File Parser
+libedit-20260512.3.1-r0 - BSD line editing library
+libelf-0.195-r0 - Library to read, modify and create ELF files
+libelogind-255.24-r2 - Standalone fork of systemd's elogind (libraries)
+libepoxy-1.5.10-r1 - Direct Rendering Manager runtime library
+libevdev-1.13.6-r0 - Kernel Evdev Device Wrapper Library
+libevent-2.1.13-r0 - An event notification library
+libexif-0.6.26-r0 - library to parse an EXIF file and read the data from those tags
+libexpat-2.9.0-r0 - XML Parser library written in C (libraries)
+libfdisk-2.42.4-r3 - Partitioning library for fdisk-like programs
+libffi-3.8.0-r0 - portable, high level programming interface to various calling conventions.
+libflac-1.5.0-r0 - Free Lossless Audio Codec (libFLAC)
+libfontenc-1.1.9-r0 - X11 font encoding library
+libformw-6.6_p20261017-r0 - Console display library (libformw)
+libfreeaptx-0.2.2-r0 - Free implementation of Audio Processing Technology codec (aptX)
+libfyaml-0.9.6-r1 - Fully feature complete YAML parser and emitter
+libgcc-15.2.0-r9 - GNU C compiler runtime libraries
+libgcrypt-1.12.4-r0 - General purpose crypto library based on the code used in GnuPG
+libglycin-2.2.3-r0 - Sandboxed and extendable image decoding
+libgnome-bg-4-51.0-r0 - GNOME desktop core libraries
+libgnome-desktop-3-51.0-r0 - GNOME desktop core libraries
+libgnome-desktop-4-51.0-r0 - GNOME desktop core libraries
+libgnome-qr-4-51.0-r0 - GNOME desktop core libraries
+libgomp-15.2.0-r9 - GCC shared-memory parallel programming API library
+libgpg-error-1.61-r0 - Support library for libgcrypt
+libgsystemservice-0.3.0-r0 - Common components for building system services to be exposed on the D-Bus system bus
+libgtop-2.41.3-r1 - GNOME top library
+libgudev-238-r1 - GObject-based wrapper library for libudev
+libgusb-0.4.9-r1 - GLib wrapper around libusb
+libgweather4-4.6.0-r0 - GNOME weather library
+libhandy1-1.8.3-r0 - Library full of GTK+ widgets for mobile phones
+libheif-1.23.6-r0 - ISO/IEC 23008-12:2017 HEIF file format decoder and encoder
+libheif-aom-1.23.6-r0 - libheif AVIF/AV1 encoder and decoder plugins using libaom
+libheif-dav1d-1.23.6-r0 - libheif AVIF/AV1 decoder plugin using dav1d
+libheif-jpeg-1.23.6-r0 - libheif JPEG decoder and encoder plugins for JPEG-in-HEIF images
+libheif-libde265-1.23.6-r0 - libheif HEIC/HEVC (H.265) decoder plugin using libde265
+libheif-openh264-1.23.6-r0 - libheif AVC (H.264) decoder plugin using OpenH264
+libheif-openjpeg-1.23.6-r0 - libheif JPEG 2000 encoder and decoder plugins using OpenJPEG
+libheif-svtenc-1.23.6-r0 - libheif AVIF/AV1 encoder plugin using SVT-AV1
+libheif-x265-1.23.6-r0 - libheif HEIC/HEVC (H.265) encoder plugin using x265
+libhwy-1.4.0-r1 - Performance-portable, length-agnostic SIMD with runtime dispatch
+libical-3.0.20-r1 - Reference implementation of the iCalendar format
+libice-1.1.2-r0 - X11 Inter-Client Exchange library
+libidn2-2.3.8-r0 - Encode/Decode library for internationalized domain names
+libimagequant-4.4.1-r0 - Rust library for high-quality conversion of RGBA images to 8-bit indexed-color (palette) images
+libinput-libs-1.32.0-r0 - Library for handling input devices (libraries)
+libinput-udev-1.32.0-r0 - Library for handling input devices (udev rules)
+libintl-1.0-r0 - GNU gettext runtime library
+libjpeg-turbo-3.1.3-r0 - Accelerated baseline JPEG compression and decompression library
+libjxl-0.11.2-r4 - JPEG XL image format reference implementation
+libksba-1.7.0-r0 - Libksba is a CMS and X.509 access library
+liblastlog2-2.42.4-r3 - Y2038 safe version of lastlog
+libldac-2.0.2.3-r1 - Lossy audio codec for Bluetooth connections
+libldap-2.6.15-r0 - OpenLDAP libraries
+libltdl-2.6.2-r1 - Runtime libraries for GNU Libtool Dynamic Module Loader
+libmagic-5.48-r0 - File type identification library
+libmanette-0.2.13-r0 - Simple GObject game controller library
+libmbim-1.34.0-r1 - MBIM modem protocol helper library
+libmbim-udev-1.34.0-r1 - MBIM modem protocol helper library (udev rules)
+libmd-1.3.0-r0 - Message Digest functions from BSD systems
+libmenuw-6.6_p20261017-r0 - Console display library (libmenuw)
+libmm-glib-1.25.95_git20261005-r0 - ModemManager library
+libmnl-1.0.5-r2 - Library for minimalistic netlink
+libmodplug-0.8.9.0-r3 - A MOD playing library
+libmount-2.42.4-r3 - Block device identification library from util-linux
+libncursesw-6.6_p20261017-r0 - Console display library (libncursesw)
+libndp-1.9-r1 - Library for IPv6 Neighbor Discovery Protocol
+libnftnl-1.3.2-r0 - Netfilter library providing interface to the nf_tables subsystem
+libnl3-3.12.0-r0 - Library for applications dealing with netlink sockets
+libnm-1.58.1-r1 - GObject-based client library for NetworkManager
+libnma-common-1.10.6-r4 - NetworkManager GUI client library (shared data for GTK3 and GTK4 libraries)
+libnma-gtk4-1.10.6-r4 - NetworkManager GUI client library (GTK4 library)
+libnotify-0.8.9-r0 - Desktop notification library
+libnvme-1.16.2-r0 - C Library for NVM Express on Linux
+libogg-1.3.6-r0 - Ogg bitstream and framing library
+libpanelw-6.6_p20261017-r0 - Console display library (libpanelw)
+libpciaccess-0.19-r0 - X11 PCI access library
+libphonenumber-9.0.41-r0 - Library for parsing, formatting, and validating international phone numbers.
+libphosh-0.58.0-r0 - Wayland shell for GNOME on mobile devices (libraries)
+libpisp-1.7.0-r0 - Helper library for the PiSP hardware block
+libpng-1.6.59-r0 - Portable Network Graphics library
+libprotobuf-31.1-r4 - Runtime library for C++ users of protocol buffers
+libprotobuf-lite-31.1-r4 - Runtime library for C++ users with 'lite runtime' setting of protocol buffers
+libprotoc-31.1-r4 - Runtime library for Protocol Buffer compiler
+libproxy-0.5.12-r0 - Library handling all the details of proxy configuration
+libpsl-0.21.5-r3 - C library for the Publix Suffix List
+libpulse-17.0-r9 - Pulseaudio libraries
+libpulse-mainloop-glib-17.0-r9 - Pulseaudio mainloop-glib library
+libpwquality-1.4.5-r6 - Password quality checking library
+libqmi-1.38.0_git20261005-r0 - QMI modem protocol helper library
+libqrtr-glib-1.4.0-r0 - Qualcomm IPC Router protocol helper library
+libraw1394-2.1.2-r5 - Library to provide access to Linux 1394 subsystem
+librsvg-2.63.3-r0 - Library to render SVG images to Cairo surfaces
+librtmp-2.4_git20190330-r5 - Real Time Messaging Protocol (RTMP) library
+libsasl-2.1.28-r9 - Cyrus Simple Authentication and Security Layer (SASL) library
+libseat-0.9.3-r1 - Universal seat management library
+libseccomp-2.6.1-r0 - interface to the Linux Kernel's syscall filtering mechanism
+libsecret-0.21.7-r0 - Library for storing and retrieving passwords and other secrets
+libselinux-3.11-r3 - SELinux library and simple utilities
+libsharpyuv-1.6.0-r0 - Libraries for working with WebP images (libsharpyuv library)
+libsm-1.2.6-r0 - X11 Session Management library
+libsmartcols-2.42.4-r3 - Formatting library for ls-like programs
+libsmbclient-4.23.10-r0 - The SMB client library
+libsndfile-1.2.2-r3 - C library for reading and writing files containing sampled sound
+libsoup3-3.6.6-r0 - Gnome HTTP client/server Library
+libsrt-1.5.5-r0 - Secure Reliable Transport (SRT)
+libsrtp-2.8.0-r0 - implementation of the Secure Real-time Transport Protocol (SRTP)
+libssc-0.4.4-r0 - Library to expose Qualcomm Sensor Core sensors
+libssc-pyc-0.4.4-r0 - Precompiled Python bytecode for libssc
+libssl3-3.5.7-r0 - SSL shared libraries
+libstdc++-15.2.0-r9 - GNU C++ standard runtime library
+libSvtAv1Enc-4.2.0-r0 - Scalable Vector Technology for AV1 encoder (SVT-AV1 Encoder)
+libtasn1-4.21.0-r0 - The ASN.1 library used in GNUTLS
+libtheora-1.2.0-r1 - An open video codec developed by the Xiph.org
+libtirpc-conf-1.3.5-r1 - Configuration files for TI-RPC
+libtirpc-nokrb-1.3.5-r1 - Transport Independent RPC library (SunRPC replacement) - without GSS-API/Kerberos
+libucontext-1.5.2-r0 - ucontext function implementations
+libunibreak-6.1-r0 - Implementation of the line breaking and word breaking algorithms
+libunistring-1.4.2-r0 - Library for manipulating Unicode strings and C strings
+libunwind-1.8.3-r0 - Portable and efficient C programming interface (API) to determine the call-chain of a program
+libusb-1.0.30-r0 - Library that enables userspace access to USB devices
+libuuid-2.42.4-r3 - DCE compatible Universally Unique Identifier library
+libuv-1.52.1-r0 - Cross-platform asychronous I/O
+libva-2.24.1-r0 - Video Acceleration (VA) API for Linux
+libverto-0.3.2-r2 - Main loop abstraction library
+libvorbis-1.3.7-r2 - Vorbis codec library
+libwacom-2.17.0-r2 - Library to help implement Wacom tablet settings
+libwacom-udev-2.17.0-r2 - Library to help implement Wacom tablet settings (udev rules)
+libwbclient-4.23.10-r0 - Samba winbind client libraries
+libwebp-1.6.0-r0 - Libraries for working with WebP images
+libwebpdemux-1.6.0-r0 - Libraries for working with WebP images (libwebpdemux library)
+libwebpmux-1.6.0-r0 - Libraries for working with WebP images (libwebpmux library)
+libwoff2common-1.0.2-r4 - Web Open Font Format 2 reference implementation (common library)
+libwoff2enc-1.0.2-r4 - Web Open Font Format 2 reference implementation (decoder library)
+libx11-1.8.14-r0 - X11 client-side library
+libxau-1.0.12-r0 - X11 authorisation library
+libxcb-1.17.0-r2 - X11 client-side library
+libxcomposite-0.4.7-r0 - X11 Composite extension library
+libxcursor-1.2.3-r0 - X cursor management library
+libxcvt-0.1.3-r0 - xorg xcvt library and cvt program
+libxdamage-1.1.7-r0 - X11 damaged region extension library
+libxdmcp-1.1.5-r1 - X11 Display Manager Control Protocol library
+libxext-1.3.7-r0 - X11 miscellaneous extensions library
+libxfixes-6.0.2-r0 - X11 miscellaneous 'fixes' extension library
+libxfont2-2.0.8-r0 - X.Org X11 libXfont2 runtime library
+libxft-2.3.9-r0 - FreeType-based font drawing library for X
+libxi-1.8.4-r0 - X11 Input extension library
+libxinerama-1.1.6-r0 - X11 Xinerama extension library
+libxkbcommon-1.13.2-r0 - keyboard handling library
+libxkbcommon-x11-1.13.2-r0 - keyboard handling library (x11 support)
+libxkbfile-1.2.0-r0 - X11 keyboard file manipulation library
+libxml2-2.13.9-r2 - XML parsing library, version 2
+libxmlb-0.3.29-r0 - Library to help create and query binary XML blobs
+libxmu-1.3.1-r0 - X11 miscellaneous micro-utility library
+libxrandr-1.5.5-r0 - X11 RandR extension library
+libxrender-0.9.13-r0 - X Rendering Extension client library
+libxshmfence-1.3.3-r0 - X11 shared memory fences
+libxslt-1.1.43-r3 - XML stylesheet transformation library
+libxt-1.3.1-r0 - X11 toolkit intrinsics library
+libxtables-1.8.13-r0 - Linux kernel firewall, NAT and packet mangling tools (xtables library)
+libxtst-1.2.6-r0 - X11 Testing -- Resource extension library
+libxv-1.0.13-r0 - X11 Video extension library
+libxxf86vm-1.1.7-r0 - X11 XFree86 video mode extension library
+libyuv-0.0.1928-r0 - Library for YUV scaling
+libzbar-0.23.93-r2 - Port of ZBAR BAR CODE READER (library)
+linux-pam-1.7.1-r4 - Linux PAM (Pluggable Authentication Modules for Linux)
+llvm23-libs-23.1.4-r0 - LLVM 23 runtime library
+lmdb-0.9.36-r0 - Lightning Memory-Mapped Database
+logbookd-0.2.4-r4 - sqlite backed syslogd implementation
+logbookd-openrc-0.2.4-r4 - sqlite backed syslogd implementation (OpenRC init scripts)
+logger-2.42.4-r3 - Logger from util-linux
+losetup-2.42.4-r3 - Loop disk setup from util-linux
+lsblk-2.42.4-r3 - Block device list tool from util-linux
+lscpu-2.42.4-r3 - CPU architecture information helper
+lua5.4-libs-5.4.9-r0 - Lua dynamic library runtime
+lz4-1.10.0-r1 - LZ4 is lossless compression algorithm with fast decoder @ multiple GB/s per core.
+lz4-libs-1.10.0-r1 - LZ4 is lossless compression algorithm with fast decoder @ multiple GB/s per core. (libraries)
+lzo-2.10-r5 - LZO -- a real-time data compression library
+malcontent-0.14.0-r1 - Parental control support for applications
+malcontent-libs-0.14.0-r1 - Parental control support for applications (libraries)
+mcookie-2.42.4-r3 - Generate random numbers for xauth from util-linux
+mdev-conf-4.10-r0 - Configuration files for mdev and mdevd
+merge-usr-1.0.3_git20260616-r0 - Script to produce a merged-usr system
+mesa-26.2.5-r0 - Mesa DRI OpenGL library
+mesa-dri-gallium-26.2.5-r0 - Mesa gallium DRI drivers
+mesa-egl-26.2.5-r0 - Mesa libEGL runtime libraries
+mesa-gbm-26.2.5-r0 - Mesa gbm library
+mesa-gl-26.2.5-r0 - Mesa libGL runtime libraries
+mesa-gles-26.2.5-r0 - Mesa libGLESv2 runtime libraries
+mesa-vulkan-freedreno-26.2.5-r0 - Mesa Vulkan API driver for freedreno
+mkbootimg-osm0sis-2021.08.06-r1 - Android bootimg tools (maintained fork of the C version, see pmbootstrap#441)
+mobile-broadband-provider-info-20251101-r1 - Mobile broadband settings for various service providers
+modemmanager-1.25.95_git20261005-r0 - ModemManager library
+modemmanager-openrc-1.25.95_git20261005-r0 - ModemManager library (OpenRC init scripts)
+modemmanager-udev-1.25.95_git20261005-r0 - ModemManager library (udev rules)
+mount-2.42.4-r3 - mount tool from util-linux
+mpdecimal-4.0.1-r0 - complete implementation of the General Decimal Arithmetic Specification
+mpfr4-4.2.2-r0 - multiple-precision floating-point library
+mpg123-libs-1.33.7-r0 - Console-based MPEG Audio Player for Layers 1, 2 and 3 (libraries)
+msm-firmware-loader-1.9.0-r0 - Set of init services to automatically load firmware from device partitions
+msm-firmware-loader-openrc-1.9.0-r0 - Set of init services to automatically load firmware from device partitions (OpenRC init scripts)
+mtdev-1.1.7-r0 - Multitouch Protocol Translation Library Development Package
+musl-1.2.6-r2 - the musl c library (libc) implementation
+musl-fts-1.2.7-r7 - fts(3) functions, which are missing in musl libc
+musl-utils-1.2.6-r2 - the musl c library (libc) implementation
+mutter-schemas-51.0-r0 - Mutter schemas related files
+ncurses-terminfo-base-6.6_p20261017-r0 - Descriptions of common terminals
+ndctl-libs-80-r1 - Utility library for managing the libnvdimm (non-volatile memory device) sub-system in the Linux kernel (libraries)
+neon-0.36.0-r0 - HTTP and WebDAV client library with a C interface
+nettle-3.10.2-r0 - Low-level cryptographic library
+networkmanager-1.58.1-r1 - Network Management daemon
+networkmanager-bluetooth-1.58.1-r1 - BlueTooth device plugin for NetworkManager
+networkmanager-cli-1.58.1-r1 - Network Management daemon (command line interface)
+networkmanager-openrc-1.58.1-r1 - Network Management daemon (OpenRC init scripts)
+networkmanager-tui-1.58.1-r1 - Network Management daemon (textbased user interface)
+networkmanager-wifi-1.58.1-r1 - WiFi device plugin for NetworkManager
+networkmanager-wwan-1.58.1-r1 - Mobile broadband device plugin for NetworkManager
+newt-0.52.25-r1 - Redhat's Newt windowing toolkit development files
+nftables-1.1.7-r0 - Netfilter tables userspace tools
+nftables-openrc-1.1.7-r0 - Netfilter tables userspace tools (OpenRC init scripts)
+nghttp2-libs-1.70.0-r0 - HTTP/2 C client, server and proxy (libraries)
+npth-1.8-r0 - The New GNU Portable Threads library
+nspr-4.38.2-r0 - Netscape Portable Runtime
+nss-3.131-r0 - Mozilla Network Security Services
+numactl-2.0.19-r0 - Simple NUMA policy support
+obex-capabilities-0.2.1-r9 - Script to generate Bluetooth OBEX capabilities XML files at runtime
+obex-capabilities-pyc-0.2.1-r9 - Precompiled Python bytecode for obex-capabilities
+obexd-enhanced-5.87-r1 - OBEXD with enhanced capabilities such as PBAP
+onetbb-2023.1.0-r0 - oneAPI Threading Building Blocks
+openal-soft-libs-1.25.2-r1 - software implementation of OpenAL API (libraries)
+openexr-libiex-3.4.15-r0 - High dynamic-range image file format library
+openexr-libilmthread-3.4.15-r0 - High dynamic-range image file format library
+openexr-libopenexr-3.4.15-r0 - High dynamic-range image file format library
+openexr-libopenexrcore-3.4.15-r0 - High dynamic-range image file format library
+openh264-2.6.0-r0 - OpenH264 is a codec library which supports H.264 encoding and decoding
+openjpeg-2.5.4-r2 - Open-source implementation of JPEG2000 image codec
+openrc-0.63.2-r1 - OpenRC manages the services, startup and shutdown of a host
+openrc-settingsd-1.5.0-r2 - System settings D-Bus service for OpenRC
+openrc-settingsd-openrc-1.5.0-r2 - System settings D-Bus service for OpenRC (OpenRC init scripts)
+openrc-user-pam-0.63.2-r1 - OpenRC user services with PAM support
+openssh-10.6_p1-r1 - Port of OpenBSD's free SSH release
+openssh-client-common-10.6_p1-r1 - OpenBSD's SSH client common files
+openssh-client-default-10.6_p1-r1 - OpenBSD's SSH client
+openssh-keygen-10.6_p1-r1 - ssh helper program for generating keys
+openssh-nftrules-10.6_p1-r1 - Port of OpenBSD's free SSH release (nftables ruleset)
+openssh-server-10.6_p1-r1 - OpenSSH server
+openssh-server-common-10.6_p1-r1 - OpenSSH server configuration files
+openssh-server-common-openrc-10.6_p1-r1 - Port of OpenBSD's free SSH release (OpenRC init scripts)
+openssh-server-pam-10.6_p1-r1 - OpenSSH server with pam support
+openssh-sftp-server-10.6_p1-r1 - ssh sftp server module
+opus-1.6.1-r0 - Codec designed for interactive speech and audio transmission over the Internet
+orc-0.4.42-r1 - Oil Run-time Compiler
+ostree-2026.4-r0 - Operating system and container binary deployment and upgrades
+p11-kit-0.26.2-r1 - Library for loading and sharing PKCS#11 modules
+pango-1.58.2-r0 - library for layout and rendering of text
+parted-3.8-r0 - Utility to create, destroy, resize, check and copy partitions
+partx-2.42.4-r3 - Tell the kernel about disk partition changes from util-linux
+pcre2-10.49-r0 - Perl-compatible regular expression library
+pcsc-lite-libs-2.5.2-r0 - Middleware to access a smart card using SCard API (PC/SC) (libraries)
+phoc-0.58.0-r0 - wlroots based Phone compositor for the Phosh shell
+phoc-schemas-0.58.0-r0 - wlroots based Phone compositor for the Phosh shell (schemas)
+phosh-0.58.0-r0 - Wayland shell for GNOME on mobile devices
+phosh-portalsconf-0.58.0-r0 - Wayland shell for GNOME on mobile devices
+phosh-schemas-0.58.0-r0 - Wayland shell for GNOME on mobile devices (schemas)
+phosh-wallpapers-0.55.0-r1 - Phosh wallpapers and other artwork
+pinentry-1.3.2-r0 - Collection of simple PIN or passphrase entry dialogs which utilize the Assuan protocol
+pipewire-1.6.9-r0 - Multimedia processing graphs
+pipewire-libs-1.6.9-r0 - Multimedia processing graphs (libraries)
+pipewire-openrc-1.6.9-r0 - Multimedia processing graphs (OpenRC init scripts)
+pipewire-spa-libcamera-1.6.9-r0 - PipeWire libcamera SPA plugin
+pipewire-udev-1.6.9-r0 - Multimedia processing graphs (udev rules)
+pipewire-webrtc-1.6.9-r0 - Multimedia processing graphs
+pixman-0.46.4-r0 - Low-level pixel manipulation library
+pkgconf-3.0.10-r0 - development framework configuration tools
+plymouth-26.134.222-r1 - graphical bootsplash on linux
+plymouth-drm-26.134.222-r1 - graphical bootsplash on linux
+plymouth-openrc-plugin-0.4.0_git20250822-r2 - Plugin for OpenRC that displays a Plymouth splash screen during boot
+polkit-common-127-r3 - Common files for polkit and polkit-elogind
+polkit-elogind-127-r3 - Polkit with elogind session tracking
+polkit-elogind-libs-127-r3 - Polkit with elogind session tracking (libraries)
+polkit-openrc-127-r3 - Application development toolkit for controlling system-wide privileges (OpenRC init scripts)
+poppler-25.12.0-r1 - PDF rendering library based on xpdf 3.0
+poppler-glib-25.12.0-r1 - Glib wrapper for poppler
+popt-1.19-r4 - commandline option parser
+postmarketos-artwork-icons-26.06-r2 - Icons for postmarketOS
+postmarketos-artwork-wallpapers-26.06-r2 - Wallpapers for postmarketOS
+postmarketos-artwork-wallpapers-gnome-26.06-r2 - Wallpaper configuration for GNOME-based UIs
+postmarketos-base-78-r0 - Meta package for minimal postmarketOS base
+postmarketos-base-apk-78-r0 - apk-tools for mutable postmarketOS installations
+postmarketos-base-mesa-78-r0 - Meta package for minimal postmarketOS base
+postmarketos-base-nftables-78-r0 - Meta package for minimal postmarketOS base
+postmarketos-base-nftables-openrc-78-r0 - Meta package for minimal postmarketOS base
+postmarketos-base-openrc-78-r0 - Meta package for minimal postmarketOS base
+postmarketos-base-ssh-78-r0 - Meta package for minimal postmarketOS base
+postmarketos-base-sudo-78-r0 - sudo configuration
+postmarketos-base-udev-78-r0 - Meta package for minimal postmarketOS base (udev rules)
+postmarketos-base-ui-62-r0 - Meta package for minimal postmarketOS UI base
+postmarketos-base-ui-alsa-utils-62-r0 - Meta package for minimal postmarketOS UI base
+postmarketos-base-ui-audio-62-r0 - For UIs that require audio support
+postmarketos-base-ui-audio-backend-pulseaudio-62-r0 - Use pulseaudio as the audio backend.
+postmarketos-base-ui-bluez-openrc-62-r0 - Meta package for minimal postmarketOS UI base
+postmarketos-base-ui-elogind-62-r0 - Meta package for minimal postmarketOS UI base
+postmarketos-base-ui-gnome-14-r1 - Meta package for shared configuration for GNOME-based UIs
+postmarketos-base-ui-gnome-mobile-2-r0 - Meta package for shared configuration for GNOME Mobile and Phosh UIs
+postmarketos-base-ui-gnome-mobile-udev-2-r0 - Meta package for shared configuration for GNOME Mobile and Phosh UIs (udev rules)
+postmarketos-base-ui-gnome-openrc-14-r1 - Meta package for shared configuration for GNOME-based UIs
+postmarketos-base-ui-modemmanager-62-r0 - Meta package for minimal postmarketOS UI base
+postmarketos-base-ui-modemmanager-openrc-62-r0 - Meta package for minimal postmarketOS UI base
+postmarketos-base-ui-networkmanager-62-r0 - Meta package for minimal postmarketOS UI base
+postmarketos-base-ui-openrc-62-r0 - Meta package for minimal postmarketOS UI base
+postmarketos-base-ui-openrc-settingsd-62-r0 - Meta package for minimal postmarketOS UI base
+postmarketos-base-ui-qt-tweaks-62-r0 - Meta package for minimal postmarketOS UI base
+postmarketos-base-ui-qt-wayland-62-r0 - Meta package for minimal postmarketOS UI base
+postmarketos-base-ui-udev-62-r0 - Meta package for minimal postmarketOS UI base (udev rules)
+postmarketos-base-ui-wifi-wpa_supplicant-62-r0 - Use wpa_supplicant as the WiFi backend.
+postmarketos-base-ui-wifi-wpa_supplicant-openrc-62-r0 - Meta package for minimal postmarketOS UI base
+postmarketos-baselayout-78-r0 - Meta package for minimal postmarketOS base
+postmarketos-bootsplash-3-r0 - pmOS integration components for boot/shutdown splash screen
+postmarketos-bootsplash-openrc-3-r0 - pmOS integration components for boot/shutdown splash screen (OpenRC init scripts)
+postmarketos-buffybox-iskey-1-r0 - postmarketOS-specific files for buffybox programs (iskey)
+postmarketos-buffybox-unl0kr-1-r0 - postmarketOS-specific files for buffybox programs (unl0kr)
+postmarketos-config-nftables-1-r4 - nftables firewall configuration for postmarketOS
+postmarketos-config-nftables-networkmanager-1-r4 - nftables firewall configuration for postmarketOS
+postmarketos-initramfs-3.12.5-r0 - Base files for the postmarketOS initramfs / initramfs-extra
+postmarketos-keys-1-r1 - Public keys for the postmarketOS repositories
+postmarketos-mkinitfs-2.12.0-r2 - Tool to generate initramfs images for postmarketOS
+postmarketos-plymouth-themes-1.2.3-r0 - Plymouth themes for postmarketOS
+postmarketos-release-78-r0 - postmarketOS release data
+postmarketos-ui-console-1-r0 - Console environment, with no graphical/touch UI
+postmarketos-ui-console-openrc-1-r0 - Console environment, with no graphical/touch UI
+postmarketos-ui-phosh-33-r0 - (Wayland) Mobile UI using GNOME components and apps
+postmarketos-ui-phosh-openrc-33-r0 - (Wayland) Mobile UI using GNOME components and apps
+postmarketos-usb-moded-11-r0 - Meta package for configuring usb modes on postmarketOS
+postmarketos-usb-moded-default-profile-developer-11-r0 - Make 'developer mode' the default usb-moded profile (always enables usb networking)
+postmarketos-usb-moded-openrc-11-r0 - Meta package for configuring usb modes on postmarketOS (OpenRC init scripts)
+postmarketos-zram-4-r0 - zram swap configuration for postmarketOS
+postmarketos-zram-openrc-4-r0 - zram swap configuration for postmarketOS (OpenRC init scripts)
+power-profiles-daemon-0.30-r1 - Makes power profiles handling available over D-Bus
+protobuf-31.1-r4 - Library for extensible, efficient structure packing
+protobuf-c-1.5.2-r4 - Protocol Buffers implementation in C
+protoc-31.1-r4 - Protocol buffer compiler binary and library
+pulseaudio-17.0-r9 - featureful, general-purpose sound server
+pulseaudio-alsa-17.0-r9 - Pulseaudio ALSA support
+pulseaudio-bluez-17.0-r9 - Pulseaudio Bluetooth support
+pulseaudio-openrc-17.0-r9 - featureful, general-purpose sound server (OpenRC init scripts)
+pulseaudio-utils-17.0-r9 - Pulseaudio utilities
+pulseaudio-wireplumber-17.0-r9 - Wireplumber config to avoid it taking over audio
+py3-certifi-2026.10.23-r0 - Python3 package for providing Mozilla's CA Bundle
+py3-certifi-pyc-2026.10.23-r0 - Precompiled Python bytecode for py3-certifi
+py3-charset-normalizer-3.5.1-r0 - offers you an alternative to Universal Charset Encoding Detector, also known as Chardet
+py3-charset-normalizer-pyc-3.5.1-r0 - Precompiled Python bytecode for py3-charset-normalizer
+py3-dbus-1.4.0-r1 - Python3 bindings for DBUS
+py3-dbus-pyc-1.4.0-r1 - Precompiled Python bytecode for py3-dbus
+py3-docopt-0.6.2-r12 - A Python argument parser
+py3-docopt-pyc-0.6.2-r12 - Precompiled Python bytecode for py3-docopt
+py3-gobject3-3.58.1-r0 - Python bindings for the GObject library
+py3-gobject3-atspi-2.62.1-r0 - PyGObject overrides for AT-SPI (GObject Introspection)
+py3-gobject3-atspi-pyc-2.62.1-r0 - Precompiled Python bytecode for py3-gobject3-atspi
+py3-gobject3-pyc-3.58.1-r0 - Precompiled Python bytecode for py3-gobject3
+py3-idna-3.20-r0 - IDNA 2008 and UTS #46 for Python3
+py3-idna-pyc-3.20-r0 - Precompiled Python bytecode for py3-idna
+py3-requests-2.34.2-r0 - HTTP request library for Python3
+py3-requests-pyc-2.34.2-r0 - Precompiled Python bytecode for py3-requests
+py3-ruamel.yaml-0.19.1-r0 - Python YAML parser/emitter
+py3-ruamel.yaml-pyc-0.19.1-r0 - Precompiled Python bytecode for py3-ruamel.yaml
+py3-ruamel.yaml.clib-0.2.15-r3 - C version of reader, parser and emitter for ruamel.yaml
+py3-urllib3-2.8.0-r0 - HTTP library with thread-safe connection pooling, file post, and more
+py3-urllib3-pyc-2.8.0-r0 - Precompiled Python bytecode for py3-urllib3
+py3-yaml-6.0.3-r2 - Python3 bindings for YAML
+py3-yaml-pyc-6.0.3-r2 - Precompiled Python bytecode for py3-yaml
+pyc-3.14.10-r1 - Meta package for pulling in all -pyc packages
+python3-3.14.10-r1 - High-level scripting language
+python3-pyc-3.14.10-r1 - High-level scripting language (install .pyc cache files)
+python3-pycache-pyc0-3.14.10-r1 - High-level scripting language (.pyc pycache files)
+qrcodegen-1.8.0-r0 - High-quality QR Code generator library
+qrtr-libs-1.2-r1 - Userspace reference for net/qrtr in the Linux kernel (libraries)
+readline-8.3.3-r1 - GNU readline library
+rest1-0.9.1-r1 - Library for access to RESTful web services
+roc-toolkit-libs-0.4.0-r1 - Real-time audio streaming over the network (libraries)
+routewrangler-0.3.1-r0 - Routing policy daemon for enforcing strict connection preferences in NetworkManager
+routewrangler-openrc-0.3.1-r0 - Routing policy daemon for enforcing strict connection preferences in NetworkManager (OpenRC init scripts)
+runuser-2.42.4-r3 - Run a program with substitute user and group ID
+samba-client-libs-4.23.10-r0 - Samba libraries used by clients
+samba-libs-4.23.10-r0 - Samba core libraries shared by common-tools, server and clients
+samba-util-libs-4.23.10-r0 - Samba utility libraries
+sbc-2.1-r0 - Bluetooth Subband Codec (SBC) library
+scanelf-1.3.9-r1 - Scan ELF binaries for stuff
+setarch-2.42.4-r3 - setarch tool from util-linux
+setpriv-2.42.4-r3 - Run a program with different Linux privilege settings
+setxkbmap-1.3.5-r0 - set the keyboard using the X Keyboard Extension
+sfdisk-2.42.4-r3 - Partition table manipulator from util-linux
+shadow-4.20.3-r2 - PAM-using login and passwd utilities (usermod, useradd, ...)
+shared-mime-info-2.4-r7 - Freedesktop.org Shared MIME Info
+skalibs-libs-2.16.0.0-r0 - Set of general-purpose C programming libraries for skarnet.org software. (libraries)
+slang-2.3.3-r3 - Powerful interpreted language
+sleep-inhibitor-1.25-r2 - Simple program to inhibit sleep/suspend when using elogind
+sleep-inhibitor-openrc-1.25-r2 - Simple program to inhibit sleep/suspend when using elogind (OpenRC init scripts)
+sleep-inhibitor-pyc-1.25-r2 - Precompiled Python bytecode for sleep-inhibitor
+sndio-libs-1.10.0-r7 - Small audio and MIDI framework from the OpenBSD project (libraries)
+soc-qcom-14-r0 - Common package for Qualcomm devices
+soc-qcom-gstreamer-openrc-14-r0 - Common package for Qualcomm devices
+soc-qcom-openrc-14-r0 - Common package for Qualcomm devices
+soc-qcom-pulseaudio-14-r0 - Common package for Qualcomm devices
+soc-qcom-pulseaudio-openrc-14-r0 - Common package for Qualcomm devices
+soc-qcom-vulkan-14-r0 - Vulkan support for freedreno
+sound-theme-freedesktop-0.8-r2 - Desktop sound theme from Freedesktop
+sound-theme-phosh-0.55.0-r1 - Phosh wallpapers and other artwork
+soundtouch-2.4.1-r0 - Audio Processing library for changing Tempo, Pitch and Playback Rates
+soxr-0.1.3-r7 - High quality, one-dimensional sample-rate conversion library
+spandsp-0.0.6-r5 - SpanDSP is a library of DSP functions for telephony
+speexdsp-1.2.1-r2 - A voice compression format (DSP)
+spirv-tools-1.4.357.0-r0 - API and commands for processing SPIR-V modules
+sqlite-libs-3.54.1-r0 - C library that implements an SQL database engine (libraries)
+squeekboard-1.43.1-r5 - The final Phosh keyboard
+ssl_client-1.38.0-r8 - External ssl_client for busybox wget
+sudo-1.9.17_p2-r4 - Give certain users the ability to run some commands as root
+swclock-offset-0.3.0-r0 - Keep system time at an offset to a non-writable RTC
+swclock-offset-openrc-0.3.0-r0 - Keep system time at an offset to a non-writable RTC (OpenRC init scripts)
+talloc-2.4.4-r1 - Memory pool management library
+tdb-libs-1.4.15-r1 - The tdb library (libraries)
+tevent-0.17.1-r1 - The tevent library
+tiff-4.7.2-r0 - Support for the Tag Image File Format or TIFF
+tqftpserv-1.3-r0 - Trivial File Transfer Protocol server over AF_QIPCRTR
+tqftpserv-openrc-1.3-r0 - Trivial File Transfer Protocol server over AF_QIPCRTR (OpenRC init scripts)
+tslib-1.24-r0 - Touchscreen Access Library
+tzdata-2026e-r0 - Timezone data
+udev-init-scripts-35-r1 - udev startup scripts for openrc
+udev-init-scripts-openrc-35-r1 - udev startup scripts for openrc (OpenRC init scripts)
+udiskie-2.7.0-r1 - udisks2 frontend that allows managing removable media from userspace
+udiskie-pyc-2.7.0-r1 - Precompiled Python bytecode for udiskie
+udisks2-2.11.0-r2 - daemon, tools and libraries to manipulate disks
+udisks2-libs-2.11.0-r2 - Dynamic library to access the udisks daemon (libraries)
+udisks2-openrc-2.11.0-r2 - daemon, tools and libraries to manipulate disks (OpenRC init scripts)
+umount-2.42.4-r3 - umount tool from util-linux
+umtprd-1.8.1-r0 - Lightweight USB Media Transfer Protocol (MTP) responder daemon for GNU/Linux
+umtprd-openrc-1.8.1-r0 - Lightweight USB Media Transfer Protocol (MTP) responder daemon for GNU/Linux (OpenRC init scripts)
+unl0kr-3.6.0-r0 - Framebuffer-based disk unlocker for the initramfs based on LVGL
+unudhcpd-0.5.0-r0 - extremely basic DHCP server that only issues 1 IP address to any client
+unudhcpd-openrc-0.5.0-r0 - extremely basic DHCP server that only issues 1 IP address to any client (OpenRC init scripts)
+upower-1.91.0-r2 - Power Management Services
+upower-udev-1.91.0-r2 - Power Management Services (udev rules)
+usb-moded-notify-0.4.2-r1 - Simple daemon for handling usb-moded dialog events with notifications
+usb-moded-notify-openrc-0.4.2-r1 - Simple daemon for handling usb-moded dialog events with notifications (OpenRC init scripts)
+usb-signaller-0.4.2-r0 - Switch between different USB gadgets
+usb-signaller-openrc-0.4.2-r0 - Switch between different USB gadgets (OpenRC init scripts)
+userspace-rcu-0.15.3-r0 - Userspace RCU (read-copy-update) library
+util-linux-2.42.4-r3 - Random collection of Linux utilities
+util-linux-login-2.42.4-r3 - Login utils from util-linux package: newgrp, last, lastb, lastlog2, login, lslogins, nologin, su, sulogin
+util-linux-misc-2.42.4-r3 - Misc binaries for util-linux
+util-linux-openrc-2.42.4-r3 - Random collection of Linux utilities (OpenRC init scripts)
+utmps-libs-0.1.3.4-r1 - A secure utmp/wtmp implementation (libraries)
+uuidgen-2.42.4-r3 - UUID generator from util-linux
+vips-8.18.7-r0 - fast image processing library with low memory needs
+vips-heif-8.18.7-r0 - Libheif support for vips
+vips-jxl-8.18.7-r0 - JpegXL support for vips
+vips-poppler-8.18.7-r0 - Poppler support for vips
+vo-aacenc-0.1.3-r3 - VisualOn AAC encoder from Android
+vo-amrwbenc-0.1.3-r3 - VisualOn AMR-WB encoder from Android
+volume_key-0.3.12-r9 - Library for manipulating storage volume encryption keys
+vulkan-loader-1.4.360-r0 - Vulkan Installable Client Driver (ICD) Loader
+wayland-libs-client-1.26.0-r0 - A computer display server protocol (client library)
+wayland-libs-cursor-1.26.0-r0 - A computer display server protocol (cursor library)
+wayland-libs-egl-1.26.0-r0 - A computer display server protocol (egl library)
+wayland-libs-server-1.26.0-r0 - A computer display server protocol (server library)
+webkit2gtk-6.0-2.48.1-r4 - Portable web rendering engine WebKit for GTK+ - GTK4 version
+webrtc-audio-processing-1-1.3-r5 - AudioProcessing module from the WebRTC project
+webrtc-audio-processing-2-2.1-r3 - AudioProcessing module from the WebRTC project
+wipefs-2.42.4-r3 - Utility to wipe filesystems from device from util-linux
+wireless-regdb-2025.10.07-r0 - Central Regulatory Domain Database
+wireless-tools-30_pre9-r5 - Open Source wireless tools
+wireless-tools-libs-30_pre9-r5 - Open Source wireless tools (libraries)
+wireplumber-0.5.18-r2 - Session / policy manager implementation for PipeWire
+wireplumber-libs-0.5.18-r2 - Session / policy manager implementation for PipeWire (libraries)
+wireplumber-openrc-0.5.18-r2 - Session / policy manager implementation for PipeWire (OpenRC init scripts)
+wpa_supplicant-2.11-r4 - utility providing key negotiation for WPA wireless networks
+wpa_supplicant-openrc-2.11-r4 - utility providing key negotiation for WPA wireless networks (OpenRC init scripts)
+x265-libs-4.2-r0 - Open Source H265/HEVC video encoder (libraries)
+xcb-util-renderutil-0.3.10-r0 - X C-language Binding - Convenience functions for XRender extension
+xcb-util-wm-0.4.2-r0 - X C-language Binding - helpers for ICCCM and EWMH
+xdg-dbus-proxy-0.1.9-r0 - Filtering proxy for D-Bus connections
+xdg-desktop-portal-1.22.1-r0 - Desktop integration portal
+xdg-desktop-portal-gtk-1.15.3-r2 - Gtk implementation of xdg-desktop-portal
+xdg-desktop-portal-openrc-1.22.1-r0 - Desktop integration portal (OpenRC init scripts)
+xdg-desktop-portal-phosh-0.58.0-r0 - xdg-desktop-portal implementation using GTK/GNOME/Phosh
+xdg-desktop-portal-wlr-0.8.4-r0 - wlroots implementation of xdg-desktop-portal
+xdg-desktop-portal-wlr-openrc-0.8.4-r0 - wlroots implementation of xdg-desktop-portal (OpenRC init scripts)
+xdg-document-portal-1.22.1-r0 - Desktop integration portal (document portal)
+xdg-document-portal-openrc-1.22.1-r0 - Desktop integration portal (document portal) (OpenRC init scripts)
+xdg-user-dirs-0.20-r0 - Manage user directories like ~/Desktop and ~/Music
+xdg-user-dirs-gtk-0.16-r0 - GTK frontend for xdg-user-dirs
+xdg-utils-1.2.1-r1 - Basic desktop integration functions
+xfsprogs-7.2.0-r0 - XFS filesystem utilities
+xfsprogs-extra-7.2.0-r0 - XFS filesystem extra utilities
+xkbcomp-1.5.0-r0 - XKBD keymap compiler
+xkeyboard-config-99992.48-r0 - X keyboard configuration files
+xorg-server-common-21.1.25-r0 - Xorg server common files
+xprop-1.2.8-r0 - Property displayer for X
+xset-1.2.5-r1 - X.Org xset application
+xwayland-24.1.14-r0 - Compact xserver to run under wayland for compatibility
+xz-5.8.4-r0 - Library and CLI tools for XZ and LZMA compressed files
+xz-libs-5.8.4-r0 - Library and CLI tools for XZ and LZMA compressed files (libraries)
+yaml-0.2.5-r2 - YAML 1.1 parser and emitter written in C
+zlib-1.3.2-r0 - A compression/decompression Library
+zstd-libs-1.5.7-r2 - Zstandard - Fast real-time compression algorithm (libraries)

@@ -1,0 +1,33 @@
+mkdir /usr/local/lib
+write archive/oneplus-nord-n100-nura-20261029-wifi-checkpoint/wifi-artifacts/bin/qrtr-ns /usr/local/sbin/qrtr-ns
+set_inode_field /usr/local/sbin/qrtr-ns mode 0100755
+set_inode_field /usr/local/sbin/qrtr-ns uid 0
+set_inode_field /usr/local/sbin/qrtr-ns gid 0
+write archive/oneplus-nord-n100-nura-20261029-wifi-checkpoint/wifi-artifacts/bin/pd-mapper /usr/local/sbin/pd-mapper
+set_inode_field /usr/local/sbin/pd-mapper mode 0100755
+set_inode_field /usr/local/sbin/pd-mapper uid 0
+set_inode_field /usr/local/sbin/pd-mapper gid 0
+write archive/oneplus-nord-n100-nura-20261029-wifi-checkpoint/wifi-artifacts/bin/rmtfs-downstream /usr/local/sbin/rmtfs-downstream
+set_inode_field /usr/local/sbin/rmtfs-downstream mode 0100755
+set_inode_field /usr/local/sbin/rmtfs-downstream uid 0
+set_inode_field /usr/local/sbin/rmtfs-downstream gid 0
+write archive/oneplus-nord-n100-nura-20261029-wifi-checkpoint/wifi-artifacts/bin/tqftpserv-downstream /usr/local/sbin/tqftpserv-downstream
+set_inode_field /usr/local/sbin/tqftpserv-downstream mode 0100755
+set_inode_field /usr/local/sbin/tqftpserv-downstream uid 0
+set_inode_field /usr/local/sbin/tqftpserv-downstream gid 0
+write archive/oneplus-nord-n100-nura-20261029-wifi-checkpoint/wifi-artifacts/device-overlay/billie2-wifi-start /usr/local/sbin/billie2-wifi-start
+set_inode_field /usr/local/sbin/billie2-wifi-start mode 0100755
+set_inode_field /usr/local/sbin/billie2-wifi-start uid 0
+set_inode_field /usr/local/sbin/billie2-wifi-start gid 0
+write archive/oneplus-nord-n100-nura-20261029-wifi-checkpoint/wifi-artifacts/bin/icnss_quirk_override-device.ko /usr/local/lib/icnss_quirk_override.ko
+set_inode_field /usr/local/lib/icnss_quirk_override.ko mode 0100644
+set_inode_field /usr/local/lib/icnss_quirk_override.ko uid 0
+set_inode_field /usr/local/lib/icnss_quirk_override.ko gid 0
+write archive/oneplus-nord-n100-nura-20261029-wifi-checkpoint/wifi-artifacts/bin/qca_cld3_wlan_smmu-device-diagnostic-only.ko /usr/local/lib/qca_cld3_wlan_smmu.ko
+set_inode_field /usr/local/lib/qca_cld3_wlan_smmu.ko mode 0100644
+set_inode_field /usr/local/lib/qca_cld3_wlan_smmu.ko uid 0
+set_inode_field /usr/local/lib/qca_cld3_wlan_smmu.ko gid 0
+write archive/oneplus-nord-n100-nura-20261029-wifi-checkpoint/wifi-artifacts/device-overlay/billie2-wifi.initd /etc/init.d/billie2-wifi
+set_inode_field /etc/init.d/billie2-wifi mode 0100755
+set_inode_field /etc/init.d/billie2-wifi uid 0
+set_inode_field /etc/init.d/billie2-wifi gid 0

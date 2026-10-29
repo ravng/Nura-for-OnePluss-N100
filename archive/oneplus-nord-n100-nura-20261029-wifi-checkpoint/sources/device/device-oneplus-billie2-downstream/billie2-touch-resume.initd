@@ -1,0 +1,11 @@
+#!/sbin/openrc-run
+
+description="Resume the OnePlus Nord N100 touchscreen after Phoc starts"
+command="/usr/libexec/billie2-touch-resume"
+command_background=true
+pidfile="/run/$RC_SVCNAME.pid"
+
+depend() {
+	need greetd
+	after udev
+}

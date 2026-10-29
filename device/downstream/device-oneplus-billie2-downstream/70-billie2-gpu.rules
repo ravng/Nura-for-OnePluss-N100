@@ -1,0 +1,3 @@
+# Match Android ueventd access needed by Mesa's Turnip KGSL backend.
+KERNEL=="kgsl-3d0", GROUP="video", MODE="0660"
+KERNEL=="ion", GROUP="video", MODE="0660"

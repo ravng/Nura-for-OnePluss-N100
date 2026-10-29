@@ -1,0 +1,32 @@
+diff --git a/drivers/soc/qcom/icnss.c b/drivers/soc/qcom/icnss.c
+index 9ef94b423..6d2a9d6db 100644
+--- a/drivers/soc/qcom/icnss.c
++++ b/drivers/soc/qcom/icnss.c
+@@ -62,7 +62,7 @@ static u32 fw_version_ext;
+ #define ICNSS_THRESHOLD_GUARD		20000
+ #define ICNSS_DEFAULT_FEATURE_MASK 0x01
+ 
+-#define ICNSS_QUIRKS_DEFAULT		BIT(FW_REJUVENATE_ENABLE)
++#define ICNSS_QUIRKS_DEFAULT		0
+ #define ICNSS_MAX_PROBE_CNT		2
+ 
+ #define PROBE_TIMEOUT                 15000
+diff --git a/drivers/staging/qcacld-3.0/core/cds/src/cds_api.c b/drivers/staging/qcacld-3.0/core/cds/src/cds_api.c
+index 5e7b7f02a..0f0deb5a0 100644
+--- a/drivers/staging/qcacld-3.0/core/cds/src/cds_api.c
++++ b/drivers/staging/qcacld-3.0/core/cds/src/cds_api.c
+@@ -2884,10 +2884,10 @@ QDF_STATUS cds_smmu_mem_map_setup(qdf_device_t osdev, bool ipa_present)
+ 
+ 	osdev->smmu_s1_enabled = ipa_smmu_enabled && wlan_smmu_enabled;
+ 	if (ipa_smmu_enabled != wlan_smmu_enabled) {
+-		cds_err("SMMU mismatch; IPA:%s, WLAN:%s",
+-			ipa_smmu_enabled ? "enabled" : "disabled",
+-			wlan_smmu_enabled ? "enabled" : "disabled");
+-		return QDF_STATUS_E_FAILURE;
++		cds_warn("SMMU mismatch; IPA:%s, WLAN:%s; disabling IPA SMMU mapping",
++			 ipa_smmu_enabled ? "enabled" : "disabled",
++			 wlan_smmu_enabled ? "enabled" : "disabled");
++		osdev->smmu_s1_enabled = false;
+ 	}
+ 
+ exit_with_success:

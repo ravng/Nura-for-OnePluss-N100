@@ -1,0 +1,78 @@
+maintainer="Federico Amedeo Izzo <federico@izzo.pro>"
+pkgname=firmware-motorola-dubai
+pkgver=20250428
+pkgrel=1
+pkgdesc="Firmware for Motorola Edge 30"
+url="https://github.com/FairBlobs/dubai-firmware"
+arch="aarch64"
+license="proprietary"
+makedepends="pil-squasher"
+options="!check !strip !archcheck !tracedeps pmb:cross-native"
+_commit="56c15ff4e81e6464983397bc93be3ae5f7cfcec4"
+source="https://github.com/FairBlobs/dubai-firmware/archive/$_commit/dubai-firmware-$_commit.tar.gz"
+builddir="$srcdir/dubai-firmware-$_commit"
+
+package() {
+	# parent package is empty
+	mkdir -p "$pkgdir"
+
+	# adreno firmware
+	install -Dm644 "$builddir"/a660_zap.mbn -t \
+		"$pkgdir/usr/lib/firmware/qcom/sm7325/motorola/dubai/"
+
+	# adsp firmware
+	install -Dm644 "$builddir"/adsp.mbn -t \
+		"$pkgdir/usr/lib/firmware/qcom/sm7325/motorola/dubai/"
+	install -Dm644 "$builddir"/adsp*.jsn -t \
+		"$pkgdir/usr/lib/firmware/qcom/sm7325/motorola/dubai/"
+
+	# audio amplifier firmware
+	install -Dm644 "$builddir"/aw88261_acf.bin -t \
+		"$pkgdir/usr/lib/firmware/qcom/sm7325/motorola/dubai/"
+
+	# cdsp firmware
+	install -Dm644 "$builddir"/cdsp.mbn -t \
+		"$pkgdir/usr/lib/firmware/qcom/sm7325/motorola/dubai/"
+	install -Dm644 "$builddir"/cdsp*.jsn -t \
+		"$pkgdir/usr/lib/firmware/qcom/sm7325/motorola/dubai/"
+
+	# hexagonfs files
+	mkdir -p "$pkgdir"/usr/share/qcom/sm7325/Motorola/
+	cp -r "$builddir"/hexagonfs/ \
+		"$pkgdir"/usr/share/qcom/sm7325/Motorola/dubai
+	# Remove files that we don't need - for now
+	rm -r "$pkgdir"/usr/share/qcom/sm7325/Motorola/dubai/acdb/
+	rm -r "$pkgdir"/usr/share/qcom/sm7325/Motorola/dubai/dsp/
+	find "$pkgdir/usr/share/qcom/sm7325/Motorola/dubai/" \
+		-type f -exec chmod 0644 {} \;
+
+	# ipa firmware
+	install -Dm644 "$builddir"/yupik_ipa_fws.mbn -t \
+		"$pkgdir/usr/lib/firmware/qcom/sm7325/motorola/dubai/"
+
+	# modem firmware
+	install -Dm644 "$builddir"/modem.mbn -t \
+		"$pkgdir/usr/lib/firmware/qcom/sm7325/motorola/dubai/"
+	install -Dm644 "$builddir"/modem*.jsn -t \
+		"$pkgdir/usr/lib/firmware/qcom/sm7325/motorola/dubai/"
+	cp -r "$builddir"/modem_pr/ \
+		"$pkgdir/usr/lib/firmware/qcom/sm7325/motorola/dubai/"
+	find "$pkgdir/usr/lib/firmware/qcom/sm7325/motorola/dubai/" \
+		-type f -exec chmod 0644 {} \;
+
+	# venus firmware
+	install -Dm644 "$builddir"/vpu20_1v.mbn -t \
+		"$pkgdir/usr/lib/firmware/qcom/sm7325/motorola/dubai/"
+
+	# wpss firmware
+	install -Dm644 "$builddir"/wpss.mbn -t \
+		"$pkgdir/usr/lib/firmware/qcom/sm7325/motorola/dubai/"
+
+	# WCN6750 calibration file
+	install -Dm644 "$builddir"/board-2.bin -t \
+		"$pkgdir/usr/lib/firmware/ath11k/WCN6750/hw1.0/"
+}
+
+sha512sums="
+2a26190ebd0309d42f4cb5ed400d176d1321f6e89756338de6eddf9c122d56c856407cf61d9c4582eecae6c04c92255726f23b5ddac8c360e885d9dd285e4188  dubai-firmware-56c15ff4e81e6464983397bc93be3ae5f7cfcec4.tar.gz
+"

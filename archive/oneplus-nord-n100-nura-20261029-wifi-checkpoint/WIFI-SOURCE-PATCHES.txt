@@ -1,0 +1,80 @@
+Required source-level changes discovered during Wi-Fi bring-up
+===============================================================
+
+1. linux-msm/rmtfs rproc.c
+-------------------------
+Base: https://github.com/linux-msm/rmtfs.git
+
+Purpose: support downstream Qualcomm kernels without /sys/class/remoteproc.
+
+Patch behavior:
+- Add `static bool downstream_subsys;`.
+- In rproc_init(), after both upstream remoteproc discovery methods fail, open `/dev/subsys_modem` read-only, retain that fd in rproc_state_fd, and set downstream_subsys=true.
+- Still create/return the existing rproc_pipe read fd so run_rmtfs() keeps its normal event loop.
+- In rproc_start(), return 0 immediately for downstream_subsys because opening `/dev/subsys_modem` starts the subsystem.
+- In do_rproc_stop(), for downstream_subsys close rproc_state_fd, write `Y` to rproc_pipe[1], and return. Do not pwrite `stop`.
+
+Live source during investigation: /tmp/rmtfs-src/rproc.c
+Installed experimental binary: /usr/local/sbin/rmtfs-downstream
+
+2. linux-msm/tqftpserv translate.c
+----------------------------------
+Base: https://github.com/linux-msm/tqftpserv.git, observed source version 1.1.1.
+
+Purpose: serve firmware on a downstream kernel with no /sys/class/remoteproc.
+
+Change A — correct firmware path parsing:
+
+Replace unconditional final-byte truncation with:
+
+    pathsize = fread(outbuffer, sizeof(char), bufsize - 1, f);
+    fclose(f);
+    if (pathsize == 0)
+        return;
+    if (outbuffer[pathsize - 1] == '\n')
+        pathsize--;
+    outbuffer[pathsize] = '\0';
+
+Change B — direct custom-path fallback in translate_readonly(), immediately after read_fw_path_from_sysfs():
+
+    if (strlen(fw_sysfs_path) > 0 &&
+        strlen(fw_sysfs_path) + 1 + strlen(file) + 1 < sizeof(path)) {
+        strcpy(path, fw_sysfs_path);
+        strcat(path, "/");
+        strcat(path, file);
+        fd = open_maybe_compressed(path);
+        if (fd >= 0)
+            return fd;
+    }
+
+Then retain the existing /sys/class/remoteproc lookup as a secondary path.
+
+Live source during investigation: /tmp/tqftpserv-src/translate.c
+Live test binary: /tmp/tqftpserv-downstream
+
+Proof:
+- Stock tqftpserv rejected `/readonly/vendor/firmware_mnt/image/wlanmdsp.mbn` because `/sys/class/remoteproc` did not exist.
+- Patched tqftpserv served 3,892,648 bytes in 507 acknowledged blocks.
+- QMI WLFW service 69 appeared afterward.
+
+3. Legacy qrtr-ns
+-----------------
+Base: https://github.com/linux-msm/qrtr.git tag v1.2, the final release containing qrtr-ns.
+Build sources: src/addr.c src/hash.c src/map.c src/ns.c src/util.c src/waiter.c, linked with libqrtr.
+Installed experimental binary: /usr/local/sbin/qrtr-ns
+
+4. Legacy pd-mapper
+-------------------
+Base: https://github.com/linux-msm/pd-mapper.git commit 9543190.
+This revision accepts JSON files as command-line arguments and does not require /sys/class/remoteproc.
+Installed experimental binary: /usr/local/sbin/pd-mapper
+
+Use all maps:
+- adspr.jsn
+- adsps.jsn
+- adspua.jsn
+- cdspr.jsn
+- modemr.jsn
+- modemuw.jsn
+
+modemuw.jsn maps wlan/fw to msm/modem/wlan_pd instance 180.

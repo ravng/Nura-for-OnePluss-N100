@@ -1,0 +1,8 @@
+d3a4882216281d1e789a3e79763a8956f4188a60955ca71eaeb15c5ec679a84f  /usr/local/sbin/qrtr-ns
+0e67dbadce4186f9fd915f625716af93115fe2179a28bb55c460cce853a2be39  /usr/local/sbin/pd-mapper
+60bc9f6d0225906c1358f2bdd0e89578d9b83d5754d738a26f8b4928d23fcbf2  /usr/local/sbin/rmtfs-downstream
+33603241b920feb2a94855d6ac619684defcb203830585664be5a080ce579663  /usr/local/sbin/tqftpserv-downstream
+3987a5e5f3fb150afc9a446cd53d5ec19e382800f3675bf6ad91db251978eeff  /usr/local/sbin/billie2-wifi-start
+a78176c7af690aab2295e094033e40306f284970a6f87e16b3dd6485376bdf9a  /usr/local/lib/icnss_quirk_override.ko
+5e5fa8c943462c631c125a5124ca5a49098b232e78f47e8418e6bce8be49649d  /usr/local/lib/qca_cld3_wlan_smmu.ko
+b63e644c560b481a4dc66ec8f8a52b5ead2849fb314392eec82e8fc007ee35c5  /etc/init.d/billie2-wifi

@@ -1,0 +1,143 @@
+.*.swp
+
+# Failed patches
+*.rej
+*.orig
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+#  Usually these files are written by a python script from a template
+#  before PyInstaller builds the exe, so as to inject date/other infos into it.
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+local_settings.py
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Scrapy stuff:
+.scrapy
+
+# Documentation
+public
+docs/packaging/device-packages/deviceinfo-reference.md
+
+# PyBuilder
+target/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# celery beat schedule file
+celerybeat-schedule
+
+# SageMath parsed files
+*.sage.py
+
+# dotenv
+.env
+
+# virtualenv
+.venv
+venv/
+ENV/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+
+# Visual Studio Code
+.vscode/
+
+# Pytest
+.pytest_cache
+
+# JetBrains IDEs (PyCharm, etc)
+.idea
+
+# Sources as unpacked and built by abuild
+**/src/
+
+# Allow having untracked packages in aports using a custom-something directory
+/custom-*/
+
+# child pipeline
+.ci/build-jobs.yaml
+
+# N100 local flash/checkpoint artifacts. GitHub rejects files over 100 MiB;
+# keep reproducible metadata, source, checksums, and handoff documents in Git.
+/archive/**/images/
+/archive/**/wifi-artifacts/bin/
+/archive/**/.git/
+/archive/**/wifi-artifacts/source/**/*.o
+/archive/**/wifi-artifacts/source/**/*.ko
+/archive/**/wifi-artifacts/source/**/modules.order
+/archive/**/wifi-artifacts/source/**/Module.symvers
+/archive/**/wifi-artifacts/source/**/.tmp_versions/
+/archive/**/wifi-artifacts/source/pd-mapper-src/
+/archive/**/wifi-artifacts/source/qrtr-src/
+/archive/**/wifi-artifacts/source/rmtfs-src/
+/archive/**/wifi-artifacts/source/tqftpserv-src/
+
+# These compatibility libraries are deliberate device-package inputs.
+!/device/downstream/device-oneplus-billie2-downstream/libphosh-4.19.so
+!/archive/**/sources/device/device-oneplus-billie2-downstream/libphosh-4.19.so

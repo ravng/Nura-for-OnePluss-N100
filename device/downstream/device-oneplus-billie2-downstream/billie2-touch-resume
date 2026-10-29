@@ -1,0 +1,18 @@
+#!/bin/sh
+
+# OnePlus' downstream touchscreen driver misses DRM unblank notifications.
+# Retrigger resume while a compositor is active, including across the greeter
+# to user-session handoff and failed login attempts.
+while true; do
+	while ! pgrep -x phoc >/dev/null; do
+		sleep 1
+	done
+
+	while pgrep -x phoc >/dev/null; do
+		rmmod billie2_touch_resume 2>/dev/null || true
+		insmod "/lib/modules/$(uname -r)/extra/billie2-touch-resume.ko"
+		sleep 15
+	done
+
+	rmmod billie2_touch_resume 2>/dev/null || true
+done
