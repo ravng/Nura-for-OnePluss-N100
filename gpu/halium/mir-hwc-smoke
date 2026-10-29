@@ -2,11 +2,19 @@
 set -eu
 
 UT_ROOT=${UT_ROOT:-/opt/ut-root}
+MIR_TOUCH_RESUME=${MIR_TOUCH_RESUME:-0}
 SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 INNER_SOURCE=${1:-"$SCRIPT_DIR/mir-hwc-smoke-inner"}
+if [ "$#" -gt 0 ]; then
+    shift
+fi
 INNER=/tmp/nura-mir-hwc-smoke-inner
 GREETD_WAS_RUNNING=0
 CONTAINER_STARTED=0
+UDEV_MOUNTED=0
+TOUCH_RESUME_WAS_RUNNING=0
+TOUCH_RESUME_PID=
+TOUCH_RESUME_MODULE="/lib/modules/$(uname -r)/extra/billie2-touch-resume.ko"
 
 if [ "$(id -u)" -ne 0 ]; then
     echo "Run as root: sudo $0" >&2
@@ -31,20 +39,43 @@ if [ ! -e "$UT_ROOT/android/vendor/lib64/egl/libEGL_adreno.so" ]; then
     echo "Adreno vendor libraries are not mounted under $UT_ROOT/android/vendor" >&2
     exit 2
 fi
+reload_touchscreen() {
+    rmmod billie2_touch_resume 2>/dev/null || true
+    insmod "$TOUCH_RESUME_MODULE"
+}
+
+touchscreen_resume_loop() {
+    while sleep 5; do
+        reload_touchscreen || return
+    done
+}
+
 
 cleanup() {
     status=$?
     trap - EXIT INT TERM
+
+    if [ -n "$TOUCH_RESUME_PID" ]; then
+        kill "$TOUCH_RESUME_PID" 2>/dev/null || true
+        wait "$TOUCH_RESUME_PID" 2>/dev/null || true
+    fi
 
     rm -f "$UT_ROOT$INNER"
 
     if [ "$CONTAINER_STARTED" -eq 1 ]; then
         chroot "$UT_ROOT" /usr/bin/lxc-stop -n android -k >/dev/null 2>&1 || true
     fi
+    if [ "$UDEV_MOUNTED" -eq 1 ]; then
+        umount "$UT_ROOT/run/udev" >/dev/null 2>&1 || true
+    fi
 
     if [ "$GREETD_WAS_RUNNING" -eq 1 ]; then
         rc-service greetd start >/dev/null 2>&1 || true
     fi
+    if [ "$TOUCH_RESUME_WAS_RUNNING" -eq 1 ]; then
+        rc-service billie2-touch-resume start >/dev/null 2>&1 || true
+    fi
+
 
     exit "$status"
 }
@@ -53,6 +84,24 @@ trap cleanup EXIT INT TERM
 if rc-service greetd status >/dev/null 2>&1; then
     GREETD_WAS_RUNNING=1
 fi
+if [ "$MIR_TOUCH_RESUME" -eq 1 ]; then
+    if [ ! -e "$TOUCH_RESUME_MODULE" ]; then
+        echo "Touchscreen resume module is missing: $TOUCH_RESUME_MODULE" >&2
+        exit 2
+    fi
+    if rc-service billie2-touch-resume status >/dev/null 2>&1; then
+        TOUCH_RESUME_WAS_RUNNING=1
+        rc-service billie2-touch-resume stop
+    fi
+fi
+if [ -d /run/udev ]; then
+    mkdir -p "$UT_ROOT/run/udev"
+    if ! mountpoint -q "$UT_ROOT/run/udev"; then
+        mount --rbind /run/udev "$UT_ROOT/run/udev"
+        UDEV_MOUNTED=1
+    fi
+fi
+
 
 chroot "$UT_ROOT" /usr/bin/lxc-stop -n android -k >/dev/null 2>&1 || true
 rm -rf /dev/__properties__/* /dev/socket/*
@@ -78,5 +127,11 @@ done
 if [ "$GREETD_WAS_RUNNING" -eq 1 ]; then
     rc-service greetd stop
 fi
+if [ "$MIR_TOUCH_RESUME" -eq 1 ]; then
+    reload_touchscreen
+    touchscreen_resume_loop &
+    TOUCH_RESUME_PID=$!
+fi
 
-chroot "$UT_ROOT" "$INNER"
+
+chroot "$UT_ROOT" "$INNER" "$@"

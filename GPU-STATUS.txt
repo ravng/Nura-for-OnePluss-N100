@@ -67,11 +67,20 @@ REPOSITORY TEST LAUNCHERS
   Initializes the Lomiri system compositor and asserts Qualcomm/Adreno ES 3.2.
 - gpu/halium/mir-visible-smoke-inner
   Runs ABI-matched miral-kiosk and weston-simple-shm for five seconds.
+- gpu/halium/mir-touch-smoke
+  Dedicated reversible touchscreen launcher. It keeps the downstream
+  billie2_touch_resume workaround active while Phoc is stopped.
+- gpu/halium/mir-touch-smoke-inner
+  Runs weston-simple-touch, waits until Mir registers event1, and passes only
+  after Mir logs EV_ABS coordinate events.
+
 
 The outer launcher accepts the inner launcher as its first argument:
 
   sudo ./mir-hwc-smoke
   sudo ./mir-hwc-smoke ./mir-visible-smoke-inner
+
+  sudo ./mir-touch-smoke 45
 
 VISIBLE TEST PREREQUISITES IN THE STAGED UBUNTU ROOT
 ----------------------------------------------------
@@ -123,6 +132,26 @@ Expected:
 That route cannot accelerate current Phoc: the downstream display is
 /dev/dri/card0 while Turnip uses /dev/kgsl-3d0, and wlroots cannot join the
 KGSL allocator to this DRM display. The working route is Halium/libhybris/Mir.
+
+ACCELERATED TOUCH RESULT
+------------------------
+Accelerated touch is not working yet. The physical test established:
+- /dev/input/event1 is the touchpanel and libinput classifies it as keyboard
+  plus direct touch.
+- Mir selects evdev-input 1.8.2 and registers event1 after the downstream
+  billie2_touch_resume module is retriggered.
+- Without that retrigger, Mir does not register the usable input devices.
+- With event1 registered, the driver sends continuous EV_SYN frames but no
+  EV_ABS coordinates while the user taps and drags.
+- weston-simple-touch therefore remains a black canvas with Mir's gray
+  software cursor at the top-left; no colored touch trail appears.
+- The launcher cleanup was exercised: Android LXC stopped, the temporary udev
+  bind was removed, greetd and billie2-touch-resume restarted, Pixman login
+  returned, and SSH remained available after USB networking was restored.
+
+Do not mark accelerated touch working based only on event1 registration or
+EV_SYN traffic. The pass criterion is logged EV_ABS events plus a visible
+colored trail in weston-simple-touch.
 
 SAFETY AND REMAINING INTEGRATION
 --------------------------------

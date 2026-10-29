@@ -1,0 +1,7 @@
+#!/bin/sh
+set -eu
+
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+MIR_TOUCH_RESUME=1 exec "$SCRIPT_DIR/mir-hwc-smoke" \
+    "$SCRIPT_DIR/mir-touch-smoke-inner" "$@"

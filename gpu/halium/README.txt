@@ -62,22 +62,24 @@ Install inside the staged root:
   cp mir-demos_*.deb /opt/ut-root/tmp/mir-demos.deb
   chroot /opt/ut-root dpkg -i /tmp/mir-demos.deb
 
-VISIBLE CLIENT
---------------
+VISIBLE AND TOUCH CLIENTS
+-------------------------
 weston-simple-shm is taken from:
   https://ports.ubuntu.com/ubuntu-ports/pool/universe/w/weston/weston_8.0.0-1_arm64.deb
 
-Extract the package and install only usr/bin/weston-simple-shm into
-/opt/ut-root/usr/bin. Its direct dependencies, libc.so.6 and
-libwayland-client.so.0, already exist in the Ubuntu root.
+Extract the package and install usr/bin/weston-simple-shm and
+usr/bin/weston-simple-touch into /opt/ut-root/usr/bin. Their direct
+dependencies, libc.so.6 and libwayland-client.so.0, already exist in the
+Ubuntu root.
 
 RUN
 ---
-Copy all three executable files in this directory to one directory on the
+Copy all five executable files in this directory to one directory on the
 phone. From that directory:
 
   sudo ./mir-hwc-smoke
   sudo ./mir-hwc-smoke ./mir-visible-smoke-inner
+  sudo ./mir-touch-smoke 45
 
 The first command asserts HWC2 and Adreno ES 3.2 initialization. The second
 shows weston-simple-shm for five seconds using miral-kiosk and then prints:
@@ -87,6 +89,24 @@ shows weston-simple-shm for five seconds using miral-kiosk and then prints:
 The outer launcher starts Android LXC, stops greetd only after LXC is running,
 and uses a trap to stop LXC and restart greetd on every exit path. SSH remains
 available. A successful cleanup leaves greetd STARTED and Android LXC STOPPED.
+
+The touch launcher also keeps billie2_touch_resume active while Phoc is
+stopped, binds the host udev database into the Ubuntu root, and waits until
+Mir registers /dev/input/event1 before asking for physical input. It passes
+only after Mir logs EV_ABS coordinate events.
+
+CURRENT TOUCH RESULT
+--------------------
+Accelerated touch is not working. Mir 1.8.2 registers event1, but physical
+taps and drags produce only EV_SYN frames and no EV_ABS coordinates. The
+weston-simple-touch surface is black; Mir's software cursor is a gray square
+at the top-left. Working touch would draw small colored crosses along each
+finger path.
+
+The physical no-response test still proved recovery: cleanup stopped Android
+LXC, removed the temporary /run/udev bind, restarted greetd and the existing
+touch-resume helper, and returned to the Pixman login. Do not treat event1
+registration alone as a touch milestone.
 
 PROVEN GRAPHICS EVIDENCE
 ------------------------

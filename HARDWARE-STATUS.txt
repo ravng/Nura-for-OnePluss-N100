@@ -27,6 +27,9 @@ WORKING WITH WORKAROUND
 - Touchscreen
   Works at login and in Phosh using the billie2-touch-resume kernel
   module/helper. A correct downstream DRM/Phoc unblank fix is still needed.
+  Accelerated Mir does not yet receive usable touch coordinates; see the
+  accelerated-touch entry under NOT WORKING.
+
 
 PARTIAL
 -------
@@ -61,11 +64,16 @@ NOT WORKING
 - Wi-Fi network interface (no wlan0)
 - Wi-Fi access-point scanning
 - Wi-Fi association and traffic
+- Accelerated Mir touchscreen input
+  Mir 1.8.2 evdev registers /dev/input/event1 after billie2_touch_resume is
+  retriggered, but physical taps produce no EV_ABS coordinate events and
+  weston-simple-touch remains unchanged. The driver emits only EV_SYN frames.
+
 
 UNTESTED
 --------
 - Accelerated graphical login and full desktop session
-- Accelerated touch, lock/unlock, suspend/resume, and repeated app launch
+- Accelerated lock/unlock, suspend/resume, and repeated app launch
 - SIM detection and cellular registration
 - Voice calls
 - SMS
@@ -102,12 +110,14 @@ SAFETY / CURRENT LIMITATIONS
 
 NEXT HARDWARE MILESTONES
 ------------------------
-1. Package the proven Halium/libhybris/Mir stack as a separate accelerated
+1. Determine why event1 emits only EV_SYN under Mir, then prove EV_ABS
+   coordinates and visible weston-simple-touch trails.
+2. Package the proven Halium/libhybris/Mir stack as a separate accelerated
    login session while retaining Pixman recovery.
-2. Validate accelerated login, touch, lock/unlock, apps, suspend/resume, and
-   thermal stability.
-3. Obtain WLAN FW_READY, create wlan0, scan, associate, and pass traffic.
-4. Validate SIM registration, calls, SMS, mobile data, and call audio.
-5. Bring up normal audio and Bluetooth.
-6. Test cameras, GPS, sensors, fingerprint, NFC, microSD, haptics, LEDs,
+3. Validate accelerated login, lock/unlock, apps, suspend/resume, and thermal
+   stability.
+4. Obtain WLAN FW_READY, create wlan0, scan, associate, and pass traffic.
+5. Validate SIM registration, calls, SMS, mobile data, and call audio.
+6. Bring up normal audio and Bluetooth.
+7. Test cameras, GPS, sensors, fingerprint, NFC, microSD, haptics, LEDs,
    flashlight, video decode, and remaining USB modes.
