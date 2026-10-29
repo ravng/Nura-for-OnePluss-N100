@@ -1,0 +1,41 @@
+#!/bin/sh
+set -eu
+
+export EGL_PLATFORM=hwcomposer
+export MIR_ANDROID_FORCE_HWC2=1
+export XDG_RUNTIME_DIR=/run
+
+log=/run/mir-hwc-smoke.log
+rm -f /run/mir_socket /run/mir_socket_trusted "$log"
+
+set +e
+timeout 15 /usr/sbin/lomiri-system-compositor \
+    --debug-without-dm \
+    --debug-active-session-name=nura-gpu-probe \
+    --console-provider=none \
+    --enable-input=false \
+    --file=/run/mir_socket \
+    --display-report=log \
+    --hwc-report=log \
+    --compositor-report=log \
+    --on-fatal-error-except \
+    >"$log" 2>&1
+status=$?
+set -e
+
+cat "$log"
+
+case "$status" in
+    0|124) ;;
+    *)
+        echo "lomiri-system-compositor exited with status $status" >&2
+        exit "$status"
+        ;;
+esac
+
+grep -F "Selected driver: ubports:android2" "$log" >/dev/null
+grep -F "GLRenderer: GL vendor: Qualcomm" "$log" >/dev/null
+grep -F "GLRenderer: GL renderer: Adreno (TM) 610" "$log" >/dev/null
+grep -F "GLRenderer: GL version: OpenGL ES 3.2" "$log" >/dev/null
+
+echo "PASS: Mir rendered through Android HWC2 on Adreno 610"

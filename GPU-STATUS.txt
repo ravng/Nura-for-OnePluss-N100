@@ -1,103 +1,140 @@
 ONEPLUS NORD N100 (BILLIE2) GPU BRING-UP
 ========================================
-Date: 2026-10-29
-Current safe UI: Phoc/Phosh with WLR_RENDERER=pixman
-Result: hardware Vulkan enumeration works; accelerated graphical session does not yet work.
+Last updated: 2026-10-29
+Milestone: Adreno-backed Mir compositor and visible Wayland client proven
+Current default/recovery UI: Phoc/Phosh with WLR_RENDERER=pixman
+
+CURRENT RESULT
+--------------
+GPU acceleration now works through the same architecture as Ubuntu Touch:
+
+  Android vendor EGL/GLES + KGSL + gralloc/HWC2
+                    |
+                 libhybris
+                    |
+       Mir android2 server platform (glibc)
+                    |
+           physical 720x1600 display
+
+This path ran side-by-side from a mounted Ubuntu Touch root. It did not replace
+the Nura Alpine/musl root or the Pixman Phosh recovery session.
 
 PROVEN ON THE PHYSICAL PHONE
 ----------------------------
-- GPU: Qualcomm Adreno 610.
-- Android GPU character device: /dev/kgsl-3d0.
-- Display DRM device: /dev/dri/card0; render node: /dev/dri/renderD128.
-- The downstream display driver identifies as msm_drm / qcom,sde-kms.
-- /vendor/firmware/a630_sqe.fw and a610_zap.* are present after mounting
-  /dev/mapper/vendor_a read-only at /vendor.
-- Writing /vendor/firmware to
-  /sys/module/firmware_class/parameters/path lets KGSL load a630_sqe.fw.
-- Mesa 26.2.5 Turnip compiled with -Dfreedreno-kmds=kgsl opens
-  /dev/kgsl-3d0 and reports:
-    Turnip Adreno (TM) 610
-    Vulkan API 1.0.354
-    Mesa driver 26.2.5
-- The installed system Mesa was compiled for freedreno KMDs msm,virtio only.
-  It cannot drive this old downstream DRM render node and falls back to llvmpipe.
+- Mir selected ubports:android2 version 1.8.0 with support priority 272.
+- Android HWC version 2.0 initialized and powered the panel on.
+- EGL vendor: Android; EGL version: 1.5 Android META-EGL.
+- GL vendor: Qualcomm.
+- GL renderer: Adreno (TM) 610.
+- GL version: OpenGL ES 3.2.
+- Mir detected the internal display as 720x1600 at approximately 90 Hz.
+- ABI-matched miral-kiosk remained running on the physical display.
+- weston-simple-shm connected over Wayland and remained visible for five
+  seconds while Mir composited with Adreno.
+- SSH stayed available during the test.
+- Cleanup stopped the Android container and restored greetd/Pixman.
 
-TEST ARTIFACTS ON THE PHONE
----------------------------
-- Mesa source: /home/nura/gpu-build/mesa-26.2.5
-- Minimal Turnip build: /home/nura/gpu-build/build
-- EGL/Gallium/Turnip build: /home/nura/gpu-build/build-gl
-- EGL/Gallium/Turnip install: /home/nura/gpu-build/install-gl
-- Proven custom Vulkan ICD:
-  /home/nura/gpu-build/build/src/freedreno/vulkan/freedreno_devenv_icd.aarch64.json
+The final visible test printed:
 
-REPRODUCE THE SUCCESSFUL HARDWARE TEST
---------------------------------------
-1. Mount vendor and initialize firmware access if not already done:
+  PASS: visible Wayland SHM client remained on the Adreno-backed display for 5 seconds
 
-   sudo mkdir -p /vendor
-   sudo mount -o ro /dev/mapper/vendor_a /vendor
-   echo /vendor/firmware | sudo tee /sys/module/firmware_class/parameters/path
-   sudo chgrp video /dev/kgsl-3d0 /dev/ion
-   sudo chmod 0660 /dev/kgsl-3d0 /dev/ion
+EXACT UBUNTU TOUCH STARTING POINT
+---------------------------------
+- Device project: UBports porting community/device-oneplus-billie2
+- GitLab project ID: 53424424
+- Commit: 3ed93c9d8bf0808cdce1d7d9ec5eb4536c26ff3d
+- Successful pipeline: 2853926385
+- Build job: 16533298559
+- Devel-flashable job: 16533298561
+- Staged phone root: /home/nura/ut-gpu/ubuntu.img
+- Mounted root: /opt/ut-root
+- Android image in that root:
+  /opt/ut-root/var/lib/lxc/android/android-rootfs.img
 
-2. Enumerate the hardware Vulkan device:
+Important installed versions:
+- libhybris: 0.1.0+git20240229+9dea23c...
+- Mir libraries and matching mir-demos:
+  1.8.2+ubports-0ubports1~20250430113019.9~408c596+ubports20.04
+- mir-graphics-drivers-android2: 1.8.0~20241216...
+- lomiri-system-compositor: 1.0.0+...
 
-   VK_DRIVER_FILES=/home/nura/gpu-build/build/src/freedreno/vulkan/freedreno_devenv_icd.aarch64.json \
-   TU_DEBUG=startup vulkaninfo --summary
+REPOSITORY TEST LAUNCHERS
+-------------------------
+- gpu/halium/mir-hwc-smoke
+  Reversible outer launcher. Starts the Android LXC container, stops greetd
+  only for the test, and always restores greetd and stops LXC on exit.
+- gpu/halium/mir-hwc-smoke-inner
+  Initializes the Lomiri system compositor and asserts Qualcomm/Adreno ES 3.2.
+- gpu/halium/mir-visible-smoke-inner
+  Runs ABI-matched miral-kiosk and weston-simple-shm for five seconds.
 
-Expected evidence includes both:
-   Found compatible device '/dev/kgsl-3d0'
-   Turnip Adreno (TM) 610
+The outer launcher accepts the inner launcher as its first argument:
 
-FAILED INTEGRATION TESTS AND MEANING
-------------------------------------
-- A custom Gallium Freedreno build with freedreno-kmds=kgsl does not initialize
-  EGL on Linux. KGSL Gallium/EGL support is tied to Mesa's Android platform;
-  merely adding kgsl_dri.so does not create a usable Linux GBM/EGL backend.
-- Phoc contains wlroots' Vulkan renderer, but a nested Wayland backend fails:
-    Cannot create Vulkan renderer: no DRM FD available
-- Direct wlroots Vulkan rendering requires a Vulkan physical device associated
-  with the display DRM FD. KGSL Turnip is attached to /dev/kgsl-3d0, while the
-  display is /dev/dri/card0; this route cannot join those devices as-is.
-- vkcube --wsi wayland selects Turnip Adreno 610, then cannot negotiate a
-  presentable format with the Pixman compositor. No accelerated surface was
-  demonstrated.
-- Keep WLR_RENDERER=pixman in both the greeter and authenticated Phosh session.
-  Removing it returns login to the previously observed renderer failure.
+  sudo ./mir-hwc-smoke
+  sudo ./mir-hwc-smoke ./mir-visible-smoke-inner
 
-WHY UBUNTU TOUCH IS NOT A DROP-IN FIX
--------------------------------------
-Ubuntu Touch uses the Android/Halium graphics route: proprietary Android
-Adreno EGL/GLES libraries behind libhybris, Android gralloc/KGSL services, and
-Mir, in a glibc environment. Nura currently uses musl, Mesa, GBM, wlroots, and
-Phoc. libhybris does not provide Phoc/wlroots with the GBM renderer it expects.
-The ICD from the larger build-gl/install-gl build returned
-VK_ERROR_INITIALIZATION_FAILED during a later headless enumeration; use the
-minimal build ICD above as the known-good hardware-enumeration oracle.
-The Ubuntu path proves this hardware and vendor firmware work, but reproducing
-it requires adopting a compatible Halium/libhybris/Mir compositor path rather
-than copying vendor libraries into the current process.
+VISIBLE TEST PREREQUISITES IN THE STAGED UBUNTU ROOT
+----------------------------------------------------
+Use the mir-demos package matching the installed Mir libraries exactly:
 
-NEXT VIABLE ROUTES
+  http://repo.ubports.com/pool/main/m/mir/mir-demos_1.8.2+ubports-0ubports1~20250430113019.9~408c596+ubports20.04_arm64.deb
+
+SHA-256:
+  d71295ce5ce4119e170c3381d3237ebb1063b64efc851a7074332d52403c38f4
+
+weston-simple-shm came from:
+  https://ports.ubuntu.com/ubuntu-ports/pool/universe/w/weston/weston_8.0.0-1_arm64.deb
+
+Only /usr/bin/weston-simple-shm is required from the Weston package. Its direct
+runtime dependencies are libc.so.6 and libwayland-client.so.0, already present
+in the staged Ubuntu root.
+
+CRITICAL DISCOVERY
 ------------------
-1. Lowest kernel/userspace mismatch: reproduce Ubuntu Touch's glibc Halium +
-   libhybris + Mir graphics stack, then determine whether Nura can run above
-   that compositor. This is the literal Ubuntu path but a substantial UI-stack
-   change.
-2. Best long-term Phoc architecture: move to a kernel/display driver compatible
-   with upstream Mesa's MSM DRM Freedreno path. This risks regressions in the
-   downstream-only touchscreen, modem, Wi-Fi, and panel support.
-3. High-risk engineering route: implement a wlroots renderer/allocator bridge
-   between KGSL Turnip/Android gralloc and downstream MSM DRM. No existing
-   bridge was found in the current stack.
+Ubuntu Focal mir-demos 1.7.1 is not compatible enough with the UBports Mir
+1.8.2 libraries for this test. miral-shell/miral-kiosk started, but connecting
+either a legacy Mir client or a Wayland client caused status 139. Replacing it
+with the exact UBports mir-demos 1.8.2 build fixed the crash.
 
-PACKAGING STILL REQUIRED AFTER A WORKING GRAPHICAL ROUTE EXISTS
----------------------------------------------------------------
-- Mount vendor read-only early enough for GPU initialization.
-- Persist firmware lookup without breaking modem/Wi-Fi firmware lookup.
-- Install 70-billie2-gpu.rules for video-group access to kgsl-3d0 and ion.
-- Package the chosen graphics libraries side-by-side first; preserve a Pixman
-  recovery session until accelerated login, lock/unlock, and resume are stable.
-- Verify visible login, Phosh session, touch, lock/unlock, repeated app launch,
-  suspend/resume, and thermal stability on the physical device.
+HWC overlays are disabled in the visible smoke launcher. This forces the
+Wayland SHM surface through Mir's Adreno GL compositor instead of testing an
+HWC direct-scanout optimization.
+
+The following warnings are non-fatal for the proven path:
+- eglSubDriverAndroid.so not found
+- libadreno_app_profiles.so not found
+- libminisf.so not found
+
+Do not hide or special-case those warnings. EGL, GLES 3.2, HWC2, display
+composition, and a visible client all initialized afterward.
+
+EARLIER MESA RESULT
+-------------------
+Mesa 26.2.5 Turnip built with freedreno-kmds=kgsl still provides a useful
+low-level oracle:
+
+  VK_DRIVER_FILES=/home/nura/gpu-build/build/src/freedreno/vulkan/freedreno_devenv_icd.aarch64.json \
+  TU_DEBUG=startup vulkaninfo --summary
+
+Expected:
+  Found compatible device '/dev/kgsl-3d0'
+  Turnip Adreno (TM) 610
+
+That route cannot accelerate current Phoc: the downstream display is
+/dev/dri/card0 while Turnip uses /dev/kgsl-3d0, and wlroots cannot join the
+KGSL allocator to this DRM display. The working route is Halium/libhybris/Mir.
+
+SAFETY AND REMAINING INTEGRATION
+--------------------------------
+- Keep WLR_RENDERER=pixman in the default greeter and Phosh session.
+- Keep the Ubuntu root side-by-side until login, lock/unlock, touch, and resume
+  are stable under the accelerated compositor.
+- Before every Android LXC start, remove stale /dev/__properties__/* and
+  /dev/socket/*; stale Android property files cause an init reboot loop.
+- Runs start many Android vendor services. Keep experimental runs controlled;
+  modem/Wi-Fi service interaction remains a device-crash risk.
+- Never replace the known-good boot/root images merely to test this path.
+
+Next GPU task: package the exact glibc/Halium/libhybris/Mir runtime as a
+separate accelerated session, then prove login, touch, lock/unlock,
+suspend/resume, repeated app launch, and recovery to Pixman.

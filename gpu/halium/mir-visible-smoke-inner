@@ -1,0 +1,78 @@
+#!/bin/sh
+set -eu
+
+export EGL_PLATFORM=hwcomposer
+export MIR_ANDROID_FORCE_HWC2=1
+export XDG_RUNTIME_DIR=/run
+
+server_log=/run/mir-visible-server.log
+client_log=/run/mir-visible-client.log
+rm -f /run/mir_socket /run/mir_socket_trusted /run/wayland-0 "$server_log" "$client_log"
+server_pid=
+client_pid=
+
+cleanup() {
+    [ -z "$client_pid" ] || kill "$client_pid" 2>/dev/null || true
+    [ -z "$server_pid" ] || kill "$server_pid" 2>/dev/null || true
+    [ -z "$client_pid" ] || wait "$client_pid" 2>/dev/null || true
+    [ -z "$server_pid" ] || wait "$server_pid" 2>/dev/null || true
+}
+trap cleanup EXIT INT TERM
+
+/usr/bin/miral-kiosk \
+    --console-provider=none \
+    --enable-input=false \
+    --file=/run/mir_socket \
+    --disable-overlays=on \
+    --display-report=log \
+    --session-mediator-report=log \
+    --on-fatal-error-except \
+    >"$server_log" 2>&1 &
+server_pid=$!
+
+tries=0
+while [ ! -S /run/wayland-0 ]; do
+    if ! kill -0 "$server_pid" 2>/dev/null; then
+        cat "$server_log"
+        echo "miral-kiosk exited before creating its socket" >&2
+        exit 1
+    fi
+    tries=$((tries + 1))
+    if [ "$tries" -ge 300 ]; then
+        cat "$server_log"
+        echo "Mir socket was not created" >&2
+        exit 1
+    fi
+    sleep 0.05
+done
+
+env -u EGL_PLATFORM \
+    WAYLAND_DISPLAY=wayland-0 \
+    XDG_RUNTIME_DIR=/run \
+    /usr/bin/weston-simple-shm \
+    >"$client_log" 2>&1 &
+client_pid=$!
+
+sleep 5
+if ! kill -0 "$server_pid" 2>/dev/null; then
+    set +e
+    wait "$server_pid"
+    server_status=$?
+    set -e
+    cat "$server_log"
+    cat "$client_log"
+    echo "miral-kiosk exited with status $server_status during the visible probe" >&2
+    exit 1
+fi
+if ! kill -0 "$client_pid" 2>/dev/null; then
+    cat "$server_log"
+    cat "$client_log"
+    echo "weston-simple-shm exited during the visible probe" >&2
+    exit 1
+fi
+
+cat "$server_log"
+cat "$client_log"
+grep -F "GLRenderer: GL renderer: Adreno (TM) 610" "$server_log" >/dev/null
+
+echo "PASS: visible Wayland SHM client remained on the Adreno-backed display for 5 seconds"

@@ -1,0 +1,82 @@
+#!/bin/sh
+set -eu
+
+UT_ROOT=${UT_ROOT:-/opt/ut-root}
+SCRIPT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+INNER_SOURCE=${1:-"$SCRIPT_DIR/mir-hwc-smoke-inner"}
+INNER=/tmp/nura-mir-hwc-smoke-inner
+GREETD_WAS_RUNNING=0
+CONTAINER_STARTED=0
+
+if [ "$(id -u)" -ne 0 ]; then
+    echo "Run as root: sudo $0" >&2
+    exit 2
+fi
+
+require_mount() {
+    if ! mountpoint -q "$1"; then
+        echo "Required mount is missing: $1" >&2
+        exit 2
+    fi
+}
+
+require_mount "$UT_ROOT"
+require_mount "$UT_ROOT/dev"
+require_mount "$UT_ROOT/proc"
+require_mount "$UT_ROOT/sys"
+require_mount "$UT_ROOT/run"
+require_mount "$UT_ROOT/android"
+
+if [ ! -e "$UT_ROOT/android/vendor/lib64/egl/libEGL_adreno.so" ]; then
+    echo "Adreno vendor libraries are not mounted under $UT_ROOT/android/vendor" >&2
+    exit 2
+fi
+
+cleanup() {
+    status=$?
+    trap - EXIT INT TERM
+
+    rm -f "$UT_ROOT$INNER"
+
+    if [ "$CONTAINER_STARTED" -eq 1 ]; then
+        chroot "$UT_ROOT" /usr/bin/lxc-stop -n android -k >/dev/null 2>&1 || true
+    fi
+
+    if [ "$GREETD_WAS_RUNNING" -eq 1 ]; then
+        rc-service greetd start >/dev/null 2>&1 || true
+    fi
+
+    exit "$status"
+}
+trap cleanup EXIT INT TERM
+
+if rc-service greetd status >/dev/null 2>&1; then
+    GREETD_WAS_RUNNING=1
+fi
+
+chroot "$UT_ROOT" /usr/bin/lxc-stop -n android -k >/dev/null 2>&1 || true
+rm -rf /dev/__properties__/* /dev/socket/*
+install -m 0755 "$INNER_SOURCE" "$UT_ROOT$INNER"
+
+chroot "$UT_ROOT" /usr/bin/lxc-start -n android -d -l WARN -o /run/android-mir.log -- \
+    /system/bin/env -i \
+    PATH=/product/bin:/apex/com.android.runtime/bin:/apex/com.android.art/bin:/sbin:/system/sbin:/system_ext/bin:/system/bin:/system/xbin:/odm/bin:/vendor/bin:/vendor/xbin \
+    INIT_STARTED_AT=0 /init second_stage
+CONTAINER_STARTED=1
+
+tries=0
+while ! chroot "$UT_ROOT" /usr/bin/lxc-info -n android -sH 2>/dev/null | grep -qx RUNNING; do
+    tries=$((tries + 1))
+    if [ "$tries" -ge 50 ]; then
+        echo "Android container did not reach RUNNING" >&2
+        cat "$UT_ROOT/run/android-mir.log" 2>/dev/null || true
+        exit 1
+    fi
+    sleep 0.1
+done
+
+if [ "$GREETD_WAS_RUNNING" -eq 1 ]; then
+    rc-service greetd stop
+fi
+
+chroot "$UT_ROOT" "$INNER"

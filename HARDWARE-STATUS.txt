@@ -1,0 +1,113 @@
+ONEPLUS NORD N100 (BILLIE2) NURA HARDWARE STATUS
+================================================
+Last updated: 2026-10-29
+
+Status meanings
+---------------
+WORKING: physically demonstrated on this N100.
+PARTIAL: low-level or experimental support works, but normal end-to-end use does not.
+NOT WORKING: tested and confirmed unavailable.
+UNTESTED: no result has been demonstrated; this does not prove failure.
+WORKAROUND: usable through a temporary compatibility path.
+
+WORKING
+-------
+- Boot to graphical Phrog login
+- Login to Phosh desktop
+- Display output
+- Internal root storage
+- USB Ethernet gadget
+- SSH over USB at 172.16.42.1
+- Volume-up button
+- Volume-down button
+- Power/wake button
+
+WORKING WITH WORKAROUND
+-----------------------
+- Touchscreen
+  Works at login and in Phosh using the billie2-touch-resume kernel
+  module/helper. A correct downstream DRM/Phoc unblank fix is still needed.
+
+PARTIAL
+-------
+- GPU acceleration
+  The exact Ubuntu Touch glibc/Halium/libhybris/Mir android2 path initializes
+  HWC2, Qualcomm Adreno 610, and OpenGL ES 3.2 on the physical panel. An
+  ABI-matched miral-kiosk rendered a visible weston-simple-shm Wayland client
+  for five seconds at 720x1600 while SSH remained available. This is not yet
+  integrated into the normal login/session; default Phosh remains Pixman.
+  See GPU-STATUS.txt and gpu/halium/README.txt.
+
+- Wi-Fi
+  wlanmdsp.mbn transfers successfully; QRTR WLAN service 69 appears; ICNSS
+  completes registration, MSA setup/readiness, and capability query. Firmware
+  never emits QMI_WLFW_FW_READY_IND, so wlan0 is not created.
+
+- Cellular modem foundation
+  Patched rmtfs, QRTR namespace, pd-mapper, modem QMI service enumeration, and
+  IPA firmware loading work. SIM registration, telephony, SMS, and mobile data
+  are not proven.
+
+- IPA
+  /vendor/firmware/ipa_fws.mdt loads through /dev/ipa, leaves reset, creates
+  rmnet_ipa0, and resolves the IPA/WLAN SMMU mismatch.
+
+- Charging and battery reporting
+  Kernel charger and battery events exist. Charging behavior, percentage
+  accuracy, thermal behavior, and runtime have not been validated.
+
+NOT WORKING
+-----------
+- Wi-Fi network interface (no wlan0)
+- Wi-Fi access-point scanning
+- Wi-Fi association and traffic
+
+UNTESTED
+--------
+- Accelerated graphical login and full desktop session
+- Accelerated touch, lock/unlock, suspend/resume, and repeated app launch
+- SIM detection and cellular registration
+- Voice calls
+- SMS
+- Mobile data traffic
+- Speaker, earpiece, microphone, headphone, routing, and call audio
+- Bluetooth controller/HCI, discovery, pairing, and audio
+- Front and rear cameras and camera flash
+- GPS/GNSS
+- Accelerometer, gyroscope, proximity, ambient light, and compass
+- Fingerprint reader
+- NFC
+- microSD card
+- Vibration/haptics
+- Notification LED
+- Flashlight/torch
+- System suspend/resume and repeated wake cycles
+- Long-duration power and thermal behavior
+- Hardware video decode
+- MTP
+- USB host/OTG
+- USB tethering modes other than the proven Ethernet gadget
+
+SAFETY / CURRENT LIMITATIONS
+----------------------------
+- Keep WLR_RENDERER=pixman in the default greeter and Phosh session.
+- The accelerated Mir path is side-by-side under /opt/ut-root and is not a
+  drop-in renderer for musl/Phoc/wlroots.
+- Android LXC starts modem/Wi-Fi vendor services; keep tests controlled.
+- Never unload a partially initialized WLAN module live; a previous rmmod
+  caused a kernel Oops.
+- Keep billie2-wifi disabled until FW_READY, wlan0, scanning, association, and
+  traffic are real.
+- Never boot /tmp/nura-billie2-no-rejuvenation.img; it entered CrashDump.
+
+NEXT HARDWARE MILESTONES
+------------------------
+1. Package the proven Halium/libhybris/Mir stack as a separate accelerated
+   login session while retaining Pixman recovery.
+2. Validate accelerated login, touch, lock/unlock, apps, suspend/resume, and
+   thermal stability.
+3. Obtain WLAN FW_READY, create wlan0, scan, associate, and pass traffic.
+4. Validate SIM registration, calls, SMS, mobile data, and call audio.
+5. Bring up normal audio and Bluetooth.
+6. Test cameras, GPS, sensors, fingerprint, NFC, microSD, haptics, LEDs,
+   flashlight, video decode, and remaining USB modes.
