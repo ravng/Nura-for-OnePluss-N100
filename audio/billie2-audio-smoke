@@ -1,0 +1,176 @@
+#!/bin/sh
+set -eu
+
+# Reproduce the proven native speaker path. The Ubuntu Touch vendor partition
+# must already be mounted below /opt/ut-root/android.
+VENDOR=${VENDOR:-/opt/ut-root/android/vendor}
+MODULES=$VENDOR/lib/modules
+CUSTOM_MODULE=${CUSTOM_MODULE:-/home/nura/billie2-btfm-stub.ko}
+QRTR_NS=${QRTR_NS:-/usr/local/sbin/qrtr-ns}
+PD_MAPPER=${PD_MAPPER:-/usr/local/sbin/pd-mapper}
+RUNDIR=/run/nura-audio
+FIRMWARE_TARGET=$(cat /sys/module/firmware_class/parameters/path)
+
+if [ "$(id -u)" -ne 0 ]; then
+	echo "Run as root: sudo $0" >&2
+	exit 2
+fi
+
+for required in "$MODULES" "$CUSTOM_MODULE" "$QRTR_NS" "$PD_MAPPER"; do
+	if [ ! -e "$required" ]; then
+		echo "Missing audio prerequisite: $required" >&2
+		exit 1
+	fi
+done
+
+if [ -z "$FIRMWARE_TARGET" ] || [ ! -d "$FIRMWARE_TARGET" ]; then
+	echo "Kernel firmware target is unavailable: $FIRMWARE_TARGET" >&2
+	exit 1
+fi
+
+find_slot_suffix() {
+	case " $(cat /proc/cmdline) " in
+		*" androidboot.slot_suffix=_a "*) echo _a; return ;;
+		*" androidboot.slot_suffix=_b "*) echo _b; return ;;
+	esac
+
+	if command -v qbootctl >/dev/null 2>&1; then
+		case "$(qbootctl -a 2>/dev/null || true)" in
+			*"Active slot: _a"*) echo _a; return ;;
+			*"Active slot: _b"*) echo _b; return ;;
+		esac
+	fi
+
+	if [ ! -e /dev/disk/by-partlabel/modem ] &&
+	   [ -e /dev/disk/by-partlabel/modem_a ]; then
+		echo _a
+		return
+	fi
+
+	echo "Unable to determine the active Android slot" >&2
+	exit 1
+}
+
+link_modem_firmware() {
+	suffix=$1
+	partition=/dev/disk/by-partlabel/modem${suffix}
+	mountpoint=$RUNDIR/modem${suffix}
+
+	mkdir -p "$mountpoint"
+	if ! mountpoint -q "$mountpoint"; then
+		mount -o ro "$partition" "$mountpoint"
+	fi
+
+	for blob in "$mountpoint"/image/*; do
+		[ -f "$blob" ] || continue
+		ln -sf "$blob" "$FIRMWARE_TARGET/${blob##*/}"
+	done
+}
+
+load_module() {
+	name=$1
+	file=$2
+	grep -qw "$name" /proc/modules || insmod "$file"
+}
+
+start_qrtr_services() {
+	mkdir -p "$RUNDIR"
+	pidof qrtr-ns >/dev/null ||
+		"$QRTR_NS" >"$RUNDIR/qrtr-ns.log" 2>&1 &
+	sleep 1
+	pidof pd-mapper >/dev/null ||
+		"$PD_MAPPER" "$FIRMWARE_TARGET"/*.jsn \
+			>"$RUNDIR/pd-mapper.log" 2>&1 &
+	sleep 1
+}
+
+load_audio_stack() {
+	# Match Android init.target.rc: all audio modules load during early-init;
+	# ADSP boots later during early-boot. Booting ADSP before this sequence
+	# leaves WCD937x RX SoundWire unenumerated with "SWR bus clsh detected".
+	load_module q6_pdr_dlkm "$MODULES/audio_q6_pdr.ko"
+	load_module q6_notifier_dlkm "$MODULES/audio_q6_notifier.ko"
+	load_module snd_event_dlkm "$MODULES/audio_snd_event.ko"
+	load_module apr_dlkm "$MODULES/audio_apr.ko"
+	load_module adsp_loader_dlkm "$MODULES/audio_adsp_loader.ko"
+	load_module q6_dlkm "$MODULES/audio_q6.ko"
+	load_module billie2_btfm_stub "$CUSTOM_MODULE"
+
+	# insmod does not resolve modules.dep, so platform must precede native.
+	load_module platform_dlkm "$MODULES/audio_platform.ko"
+	for module in \
+		audio_native audio_usf audio_pinctrl_lpi audio_swr audio_swr_ctrl \
+		audio_stub audio_wcd_core audio_wcd9xxx audio_wsa881x_analog \
+		audio_bolero_cdc audio_va_macro audio_rx_macro audio_tx_macro \
+		audio_mbhc audio_wcd937x audio_wcd937x_slave audio_pm2250_spmi \
+		audio_rouleur audio_rouleur_slave audio_sia81xx audio_aw87359 \
+		audio_aw87529
+	do
+		load_module "${module#audio_}_dlkm" "$MODULES/$module.ko"
+	done
+	load_module machine_dlkm "$MODULES/audio_machine_bengal.ko"
+}
+
+boot_adsp() {
+	echo 1 > /sys/kernel/boot_adsp/boot
+	sleep 15
+	echo soc:qcom,msm-audio-apr:qcom,q6core-audio \
+		> /sys/bus/platform/drivers_probe
+}
+
+wait_for_card() {
+	tries=0
+	while [ ! -e /proc/asound/card0 ] && [ "$tries" -lt 40 ]; do
+		tries=$((tries + 1))
+		sleep 0.25
+	done
+
+	if [ ! -e /proc/asound/card0 ]; then
+		echo "No ALSA card registered" >&2
+		cat /proc/asound/cards >&2
+		exit 1
+	fi
+}
+
+set_control() {
+	amixer -c 0 cset "name=$1" "$2" >/dev/null
+}
+
+route_speaker() {
+	set_control "RX_CDC_DMA_RX_0 Audio Mixer MultiMedia1" 1
+	set_control "RX_MACRO RX0 MUX" AIF1_PB
+	set_control "RX_MACRO RX1 MUX" AIF1_PB
+	set_control "RX_CDC_DMA_RX_0 Channels" Two
+	set_control "RX INT0_1 MIX1 INP0" RX0
+	set_control "RX INT0 DEM MUX" CLSH_DSM_OUT
+	set_control "EAR_RDAC Switch" 1
+	set_control "RDAC3_MUX" RX1
+	set_control "RX_EAR Mode" ON
+	set_control "Ext_Receiver_Amp_spkmode" On
+	set_control "RX INT2_1 MIX1 INP0" RX1
+	set_control "RX HPH Mode" CLS_AB
+	set_control "AUX_RDAC Switch" 1
+	set_control "RX_RX0 Digital Volume" 78
+	set_control "RX_RX2 Digital Volume" 78
+	set_control "Ext_Speaker_Amp_spkmode" On
+	set_control "SpkrMonoL Sia81xx Audio Scene" Playback
+	set_control "SpkrMonoR Sia81xx Audio Scene" Playback
+	set_control "SpkrMonoL Sia81xx Power" On
+	set_control "SpkrMonoR Sia81xx Power" On
+}
+
+slot_suffix=$(find_slot_suffix)
+echo "Using Android slot ${slot_suffix}"
+link_modem_firmware "$slot_suffix"
+start_qrtr_services
+load_audio_stack
+boot_adsp
+wait_for_card
+route_speaker
+
+cat /proc/asound/cards
+aplay -l
+
+if [ "${1:-}" = "--tone" ]; then
+	speaker-test -D hw:0,0 -t sine -f 440 -c 2 -r 48000 -F S16_LE -l 1
+fi

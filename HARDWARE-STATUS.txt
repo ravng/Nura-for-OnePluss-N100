@@ -1,6 +1,6 @@
 ONEPLUS NORD N100 (BILLIE2) NURA HARDWARE STATUS
 ================================================
-Last updated: 2026-10-29
+Last updated: 2026-11-02
 
 Status meanings
 ---------------
@@ -29,6 +29,13 @@ WORKING WITH WORKAROUND
   module/helper. A correct downstream DRM/Phoc unblank fix is still needed.
   Accelerated Mir does not yet receive usable touch coordinates; see the
   accelerated-touch entry under NOT WORKING.
+- Internal speaker audio
+  The physical WCD937x codec, both SoundWire endpoints, Bengal ALSA card,
+  SIA81xx amplifiers, direct ALSA playback, and normal PulseAudio playback are
+  proven. Bring-up currently requires the exact Android early-init module
+  order followed by ADSP boot and the Android speaker mixer route. Use
+  audio/billie2-audio-smoke; automatic boot integration is not complete.
+
 
 
 PARTIAL
@@ -55,6 +62,19 @@ PARTIAL
   /vendor/firmware/ipa_fws.mdt loads through /dev/ipa, leaves reset, creates
   rmnet_ipa0, and resolves the IPA/WLAN SMMU mismatch.
 
+- Audio
+  The exact Ubuntu Touch/Android early-init ordering is required: load all
+  downstream audio modules (including audio_wcd937x before
+  audio_wcd937x_slave and audio_machine_bengal) before writing boot_adsp.
+  Booting ADSP first leaves WCD937x RX SoundWire unenumerated with
+  "SWR bus clsh detected". The corrected order binds both WCD937x endpoints,
+  registers bengal-qrd-snd-card, exposes the physical RDAC controls, and lets
+  the Android speaker mixer route drive both SIA81xx amplifiers. A 440 Hz
+  direct ALSA tone and a 660 Hz PulseAudio tone were physically heard.
+  PulseAudio automatically replaces auto_null with the ALSA stereo fallback.
+  Earpiece, microphones, headphones, call audio, and persistence across an
+  ordinary boot remain unvalidated.
+
 - Charging and battery reporting
   Kernel charger and battery events exist. Charging behavior, percentage
   accuracy, thermal behavior, and runtime have not been validated.
@@ -78,7 +98,7 @@ UNTESTED
 - Voice calls
 - SMS
 - Mobile data traffic
-- Speaker, earpiece, microphone, headphone, routing, and call audio
+- Earpiece, microphone, headphone, routing changes, and call audio
 - Bluetooth controller/HCI, discovery, pairing, and audio
 - Front and rear cameras and camera flash
 - GPS/GNSS
@@ -101,7 +121,10 @@ SAFETY / CURRENT LIMITATIONS
 - Keep WLR_RENDERER=pixman in the default greeter and Phosh session.
 - The accelerated Mir path is side-by-side under /opt/ut-root and is not a
   drop-in renderer for musl/Phoc/wlroots.
-- Android LXC starts modem/Wi-Fi vendor services; keep tests controlled.
+- Android LXC starts modem/Wi-Fi vendor services and remains unsafe as a
+  general bring-up shortcut. The complete container replaces Nura's USB
+  gadget; a modified container with configfs isolated entered CrashDump.
+  Native audio now works without starting Android LXC.
 - Never unload a partially initialized WLAN module live; a previous rmmod
   caused a kernel Oops.
 - Keep billie2-wifi disabled until FW_READY, wlan0, scanning, association, and
@@ -118,6 +141,7 @@ NEXT HARDWARE MILESTONES
    stability.
 4. Obtain WLAN FW_READY, create wlan0, scan, associate, and pass traffic.
 5. Validate SIM registration, calls, SMS, mobile data, and call audio.
-6. Bring up normal audio and Bluetooth.
+6. Install the proven native audio sequence as an OpenRC service, then validate
+   earpiece, microphones, headphones, route switching, and call audio.
 7. Test cameras, GPS, sensors, fingerprint, NFC, microSD, haptics, LEDs,
    flashlight, video decode, and remaining USB modes.

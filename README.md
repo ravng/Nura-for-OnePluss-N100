@@ -18,13 +18,17 @@ Helpful resources:
 ## OnePlus Nord N100 (`billie2`) port status
 
 The default graphical session boots to Phrog/Phosh with Pixman software
-rendering. A side-by-side Ubuntu Touch Halium/libhybris/Mir path now initializes
-the Adreno 610 through HWC2 and renders a visible Wayland client on the physical
-display. It is not yet the default login session.
+rendering. A side-by-side Ubuntu Touch Halium/libhybris/Mir path initializes
+the Adreno 610 through HWC2 and renders a visible Wayland client on the
+physical display, but is not yet the default session. Native internal-speaker
+audio now works through the physical WCD937x codec and Bengal ALSA card when
+started with the proven Android early-init ordering.
 
 - [`HARDWARE-STATUS.txt`](./HARDWARE-STATUS.txt): current component matrix.
 - [`GPU-STATUS.txt`](./GPU-STATUS.txt): evidence, exact versions, risks, and next step.
 - [`gpu/halium/README.txt`](./gpu/halium/README.txt): reproducible GPU smoke setup.
+- [`audio/billie2-audio-smoke`](./audio/billie2-audio-smoke): reproducible
+  WCD937x/ADSP/ALSA speaker bring-up and optional hardware tone.
 - [`archive/`](./archive/): known-good images and historical checkpoints.
 
 

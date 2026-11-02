@@ -1,0 +1,148 @@
+ONEPLUS NORD N100 (BILLIE2) NURA PORT HANDOFF
+================================================
+Last updated: 2026-11-02
+Repository: https://github.com/ravng/Nura-for-OnePluss-N100
+Host checkout: /home/ravn/storage/nuraport
+
+CURRENT DEVICE STATE
+--------------------
+- Boots Nura to the graphical Phrog login and Phosh desktop.
+- SSH over the USB Ethernet gadget: nura@172.16.42.1, password: nura.
+- Host NetworkManager profile: nura-n100-usb. The gadget MAC/interface name
+  changes after reboot, so update connection.interface-name when necessary.
+- Current boot_a is downloads/nura-official-ut-kernel-boot.img. It combines:
+  * exact official Ubuntu Touch billie2 kernel from release 1.0;
+  * the known Nura ramdisk and Nura root-device command line;
+  * the official/Nura DTB, which was byte-identical.
+- The previously known-good rollback image is:
+  archive/oneplus-nord-n100-nura-20261029-wifi-checkpoint/images/boot.img
+- Original/official DTBO is downloads/nord_n100-dtbo.img, SHA-256:
+  47eac9731ffbdea4373acb60eeb30837642d3e69773a65f71125b304390225dc
+- Do not flash downloads/nord_n100-dtbo-no-wcd-aux.img. It is an invalid
+  experiment whose overlay fixups still reference removed properties.
+
+PROVEN HARDWARE
+---------------
+- Graphical login and Phosh desktop with Pixman rendering.
+- Display and internal storage.
+- USB Ethernet and SSH.
+- Volume-up, volume-down, and power/wake buttons.
+- Touch through the billie2-touch-resume workaround.
+- Internal speaker through both direct ALSA and PulseAudio.
+- Partial accelerated GPU path: Ubuntu Touch Halium/libhybris/Mir initializes
+  Adreno 610/HWC2 and displayed a Wayland client, but is not the normal login.
+- Partial Wi-Fi foundation: firmware transfer, QRTR service, ICNSS registration,
+  MSA readiness, and capability query work; FW_READY never arrives and wlan0
+  is absent.
+- Partial modem/IPA foundation. SIM registration and calls remain unproven.
+
+AUDIO BREAKTHROUGH
+------------------
+The physical WCD937x codec and speaker work. The critical invariant is Android's
+boot ordering, not a DTB/DTBO or kernel difference:
+
+1. Expose every modem_a/image firmware file, including adsp2.* and *.jsn, under
+   the directory named by /sys/module/firmware_class/parameters/path.
+2. Start qrtr-ns and explicit pd-mapper with all service-map JSON files.
+3. Load ALL downstream audio modules in Android init.target.rc early-init order.
+   audio_wcd937x must precede audio_wcd937x_slave; audio_machine_bengal is last.
+4. Only after all modules are loaded, write 1 to /sys/kernel/boot_adsp/boot,
+   matching Android init.qcom.rc early-boot behavior.
+5. Re-probe soc:qcom,msm-audio-apr:qcom,q6core-audio after ADSP is online.
+6. Apply the Android mixer_paths_qrd.xml speaker route.
+
+Booting ADSP before the full module stack caused the WCD937x RX SoundWire slave
+to remain unenumerated with "SWR bus clsh detected" and "device ... is not
+ready". A temporary WCD937x ASoC aux stub could register a card but could never
+produce sound because the physical RDAC path was absent. The stub has therefore
+been removed from audio/billie2-btfm-stub.c; that module now supplies only the
+missing Q6 platform device and unused BTFM DAIs.
+
+With the corrected order:
+- wcd937x-slave.a01170223 and wcd937x-slave.a01170224 both bind;
+- bengal-qrd-snd-card registers;
+- EAR_RDAC, AUX_RDAC, and RDAC3_MUX controls exist;
+- both SIA81xx amplifiers activate;
+- a 440 Hz hw:0,0 ALSA tone was physically heard;
+- PulseAudio automatically replaced auto_null/Dummy Output with
+  alsa_output.platform-soc_qcom_msm-audio-apr_qcom_q6core-audio_sound.stereo-fallback;
+- a 660 Hz PulseAudio tone was physically heard.
+
+Reproduce with audio/billie2-audio-smoke after mounting the Ubuntu Touch vendor
+partition below /opt/ut-root/android. Pass --tone for a direct hardware tone.
+The script was syntax-checked and run successfully against the live card.
+Automatic OpenRC startup is the next audio task. Earpiece, microphones,
+headphones, route switching, and call audio are still untested.
+
+PERSISTENT AUDIO BUILD INPUTS
+-----------------------------
+- audio/billie2-btfm-stub.c
+- audio/Makefile
+- audio/billie2-audio-smoke
+- downloads/btfm-stub-build/billie2-btfm-stub.ko (downloads/ is gitignored)
+- downloads/kernel-billie2
+- downloads/kernel-build
+- downloads/toolchain
+- downloads/mixer_paths_qrd.xml
+- /home/nura/billie2-btfm-stub.ko on the device
+- /home/nura/billie2-audio-smoke on the device
+
+Module build command:
+PATH=/home/ravn/storage/nuraport/downloads/toolchain/usr/bin:$PATH \
+LD_LIBRARY_PATH=/home/ravn/storage/nuraport/downloads/toolchain/usr/lib/x86_64-linux-gnu \
+make -C downloads/kernel-build \
+  M=/home/ravn/storage/nuraport/downloads/btfm-stub-build \
+  ARCH=arm64 CC=clang CROSS_COMPILE=aarch64-linux-gnu- modules
+
+OFFICIAL UBUNTU TOUCH REFERENCES
+--------------------------------
+Device port:
+https://github.com/xfonelabs/ubports-porting-community-ports-android10-oneplus-nord-n100-oneplus-billie2
+Installer configuration:
+https://github.com/ubports/installer-configs/blob/master/v2/devices/billie2.yml
+Official release-1.0 boot:
+https://github.com/rubencarneiro/billie2/releases/download/1.0/boot.img
+
+The official boot and Nura checkpoint were unpacked and compared:
+- DTB SHA-256 in both: cfb435a3bd648e4ee4f5affe555a77a7279ddc68288947740a7927877e1249b6
+- DTBO was also identical to the official installer image.
+- Kernels differed. The official-kernel/Nura-ramdisk hybrid works, but exact
+  module ordering was still required, proving the kernel difference was not the
+  SoundWire root cause.
+
+SAFETY
+------
+- Do not start the complete Android LXC as a general hardware shortcut. It
+  replaced Nura's USB gadget; a configfs-isolated attempt entered CrashDump.
+- Do not unload partially initialized WLAN modules; this previously caused a
+  kernel Oops.
+- Keep WLR_RENDERER=pixman for the default greeter and Phosh session.
+- Keep the known-good boot image available before any boot or DT change.
+- Downloads belong under /home/ravn/storage/nuraport/downloads, not /tmp.
+
+NEXT TASKS
+----------
+1. Package audio/billie2-audio-smoke and its prerequisites as an idempotent
+   OpenRC service so the card and speaker route survive an ordinary reboot.
+2. Validate earpiece, microphones, headphones, route switching, and call audio.
+3. Continue Wi-Fi by resolving the missing QMI_WLFW_FW_READY_IND.
+4. Integrate accelerated Mir as a separate selectable session and fix touch
+   coordinates there without breaking the Pixman recovery session.
+5. Validate SIM registration, calls, SMS, mobile data, cameras, GPS, sensors,
+   fingerprint, microSD, haptics, LEDs, suspend, and hardware video decode.
+
+PROMPT FOR A FUTURE LLM
+-----------------------
+Continue the OnePlus Nord N100 (billie2) Nura port in
+/home/ravn/storage/nuraport. Read N100-PORT-HANDOFF.txt, HARDWARE-STATUS.txt,
+GPU-STATUS.txt, audio/billie2-audio-smoke, and git history before changing
+anything. The phone is normally reachable as nura@172.16.42.1 over the
+nura-n100-usb NetworkManager profile; password is nura. Internal-speaker audio
+is now physically proven through ALSA and PulseAudio. Preserve the exact Android
+early-init module ordering: load the complete downstream audio stack before
+booting ADSP. Do not reintroduce the fake WCD937x aux component and do not start
+the full Android LXC. The next audio milestone is an idempotent OpenRC service,
+then earpiece/microphone/headphone/call testing. Keep downloads in the repo's
+downloads directory, retain the known-good boot rollback, update the status and
+handoff files after each milestone, and commit/push each proven milestone to
+ravng/Nura-for-OnePluss-N100.
