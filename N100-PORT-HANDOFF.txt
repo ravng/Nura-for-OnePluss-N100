@@ -1,6 +1,6 @@
 ONEPLUS NORD N100 (BILLIE2) NURA PORT HANDOFF
 ================================================
-Last updated: 2026-11-02
+Last updated: 2026-11-04
 Repository: https://github.com/ravng/Nura-for-OnePluss-N100
 Host checkout: /home/ravn/storage/nuraport
 
@@ -34,10 +34,12 @@ PROVEN HARDWARE
   Adreno 610/HWC2 and displayed a Wayland client, but is not the normal login.
 - Wi-Fi works through a native manual startup path: patched tqftpserv exposes
   service 69, wifi/wlfw-bdf.c sends the missing BDF/calibration QMI handshake,
-  FW_READY arrives, wlan0 registers, and NetworkManager scans 2.4/5 GHz APs.
-  Automatic OpenRC startup remains disabled because modem/WLAN initialization
-  during the boot runlevel disrupts later services. Association and traffic
-  remain untested.
+  FW_READY arrives, and wlan0 registers. NetworkManager scans, completes WPA
+  association and DHCP, and passes traffic over wlan0. Stock gIPAConfig=0x7d
+  froze the phone during association; wifi/billie2-wifi-start now writes a
+  runtime gIPAConfig=0 override, retaining IPA firmware only for required
+  SMMU setup. Automatic OpenRC startup remains disabled because synchronous
+  modem/WLAN initialization during the boot runlevel disrupts later services.
 - Partial modem/IPA foundation. SIM registration and calls remain unproven.
 
 AUDIO BREAKTHROUGH
@@ -134,8 +136,8 @@ SAFETY
 
 NEXT TASKS
 ----------
-1. Validate Wi-Fi association and traffic, then move the proven manual ordering
-   into a non-blocking service that runs after the required notifier foundation.
+1. Move the proven manual Wi-Fi ordering into a non-blocking service that runs
+   after the required notifier foundation.
 2. Implement a native Bluetooth controller transport; the Android QTI HAL does
    not register under the retained container, and this kernel lacks HCIUART.
 3. Validate earpiece, microphones, headphones, route switching, and call audio.

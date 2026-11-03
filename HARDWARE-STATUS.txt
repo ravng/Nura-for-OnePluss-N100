@@ -1,6 +1,6 @@
 ONEPLUS NORD N100 (BILLIE2) NURA HARDWARE STATUS
 ================================================
-Last updated: 2026-11-02
+Last updated: 2026-11-04
 
 Status meanings
 ---------------
@@ -33,11 +33,15 @@ WORKING WITH WORKAROUND
   module/helper. A correct downstream DRM/Phoc unblank fix is still needed.
   Accelerated Mir does not yet receive usable touch coordinates; see the
   accelerated-touch entry under NOT WORKING.
-- Wi-Fi interface and access-point scanning
+- Wi-Fi scanning, association, and traffic
   Native WLFW BDF/calibration QMI requests produce FW_READY; qcacld registers
-  wlan0, p2p0, and wifi-aware0; NetworkManager listed nearby 2.4/5 GHz APs.
-  Startup is currently manual because enabling billie2-wifi in the boot
-  runlevel disrupts later boot services. Association and traffic are untested.
+  wlan0, p2p0, and wifi-aware0. NetworkManager scans 2.4/5 GHz APs, associates
+  through WPA, receives DHCP configuration, and passes traffic over wlan0.
+  The stock gIPAConfig=0x7d froze the phone when association entered qcacld's
+  WLAN_IPA_STA_CONNECT path. The runtime config now uses gIPAConfig=0 while
+  retaining IPA firmware for the required SMMU setup; the UI stayed responsive
+  and three ICMP packets to 1.1.1.1 passed. Startup remains manual because the
+  synchronous OpenRC service disrupts later boot services.
 
 
 
@@ -63,7 +67,8 @@ PARTIAL
 
 - IPA
   /vendor/firmware/ipa_fws.mdt loads through /dev/ipa, leaves reset, creates
-  rmnet_ipa0, and resolves the IPA/WLAN SMMU mismatch.
+  rmnet_ipa0, and resolves the IPA/WLAN SMMU mismatch. WLAN IPA packet offload
+  is disabled because association through that offload path froze the phone.
 
 - Audio
   The exact Ubuntu Touch/Android early-init ordering is required: load all
@@ -131,8 +136,9 @@ SAFETY / CURRENT LIMITATIONS
   Native audio now works without starting Android LXC.
 - Never unload a partially initialized WLAN module live; a previous rmmod
   caused a kernel Oops.
-- Keep billie2-wifi disabled at boot. FW_READY, wlan0, and scanning work when
-  started manually, but synchronous OpenRC startup disrupts the boot sequence.
+- Keep billie2-wifi disabled at boot. FW_READY, wlan0, scanning, association,
+  and traffic work when started manually, but synchronous OpenRC startup
+  disrupts the boot sequence.
 - Never boot /tmp/nura-billie2-no-rejuvenation.img; it entered CrashDump.
 
 NEXT HARDWARE MILESTONES
@@ -143,7 +149,7 @@ NEXT HARDWARE MILESTONES
    login session while retaining Pixman recovery.
 3. Validate accelerated login, lock/unlock, apps, suspend/resume, and thermal
    stability.
-4. Validate Wi-Fi association and traffic, then integrate non-blocking startup.
+4. Integrate the proven Wi-Fi sequence as a non-blocking startup service.
 5. Implement a Bluetooth controller transport, then test discovery and pairing.
 6. Validate earpiece, microphones, headphones, route switching, and call audio.
 7. Test cameras, GPS, sensors, fingerprint, NFC, microSD, haptics, LEDs,

@@ -34,8 +34,13 @@ done
 # The stock vendor link targets Android's unmounted /mnt/vendor/persist. Use the
 # persisted address when valid; otherwise create a stable local-administered pair.
 mkdir -p "$FIRMWARE_TARGET/wlan/qca_cld"
-cp /vendor/firmware/wlan/qca_cld/WCNSS_qcom_cfg.ini \
-	"$FIRMWARE_TARGET/wlan/qca_cld/WCNSS_qcom_cfg.ini"
+stock_ini=/vendor/firmware/wlan/qca_cld/WCNSS_qcom_cfg.ini
+runtime_ini=$FIRMWARE_TARGET/wlan/qca_cld/WCNSS_qcom_cfg.ini
+# Association enters qcacld's WLAN_IPA_STA_CONNECT path. The downstream IPA
+# offload freezes this Linux userspace stack, so retain IPA for its required
+# SMMU/firmware setup but force Wi-Fi packets through the normal software path.
+awk '$0 !~ /^gIPAConfig=/ { print } END { print "gIPAConfig=0" }' \
+	"$stock_ini" >"$runtime_ini"
 PERSIST_MAC=/run/msm-firmware-loader/mnt/persist/wlan_mac.bin
 if [ -s "$PERSIST_MAC" ]; then
 	cp "$PERSIST_MAC" "$FIRMWARE_TARGET/wlan/qca_cld/wlan_mac.bin"
