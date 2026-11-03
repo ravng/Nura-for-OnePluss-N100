@@ -1,0 +1,17 @@
+#!/sbin/openrc-run
+
+name="OnePlus Nord N100 native Wi-Fi"
+description="Start IPA, modem WLAN PD, WLFW board-data handshake, and qcacld"
+command=/usr/local/sbin/billie2-wifi-start
+
+depend() {
+	need localmount
+	after modules udev
+	before billie2-audio networkmanager greetd
+}
+
+start() {
+	ebegin "Starting billie2 native Wi-Fi"
+	"$command"
+	eend $?
+}

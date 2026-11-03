@@ -1,0 +1,17 @@
+#!/sbin/openrc-run
+
+name="OnePlus Nord N100 native audio"
+description="Start the billie2 ADSP, WCD937x codec, ALSA card, and speaker route"
+command=/usr/local/sbin/billie2-audio-start
+
+depend() {
+	need localmount
+	after modules
+	before greetd
+}
+
+start() {
+	ebegin "Starting billie2 native audio"
+	"$command"
+	eend $?
+}

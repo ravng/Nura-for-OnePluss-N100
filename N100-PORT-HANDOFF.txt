@@ -28,12 +28,16 @@ PROVEN HARDWARE
 - USB Ethernet and SSH.
 - Volume-up, volume-down, and power/wake buttons.
 - Touch through the billie2-touch-resume workaround.
-- Internal speaker through both direct ALSA and PulseAudio.
+- Internal speaker through direct ALSA, PulseAudio, and OS sound settings;
+  automatic startup is enabled through the billie2-audio OpenRC boot service.
 - Partial accelerated GPU path: Ubuntu Touch Halium/libhybris/Mir initializes
   Adreno 610/HWC2 and displayed a Wayland client, but is not the normal login.
-- Partial Wi-Fi foundation: firmware transfer, QRTR service, ICNSS registration,
-  MSA readiness, and capability query work; FW_READY never arrives and wlan0
-  is absent.
+- Wi-Fi works through a native manual startup path: patched tqftpserv exposes
+  service 69, wifi/wlfw-bdf.c sends the missing BDF/calibration QMI handshake,
+  FW_READY arrives, wlan0 registers, and NetworkManager scans 2.4/5 GHz APs.
+  Automatic OpenRC startup remains disabled because modem/WLAN initialization
+  during the boot runlevel disrupts later services. Association and traffic
+  remain untested.
 - Partial modem/IPA foundation. SIM registration and calls remain unproven.
 
 AUDIO BREAKTHROUGH
@@ -43,13 +47,15 @@ boot ordering, not a DTB/DTBO or kernel difference:
 
 1. Expose every modem_a/image firmware file, including adsp2.* and *.jsn, under
    the directory named by /sys/module/firmware_class/parameters/path.
-2. Start qrtr-ns and explicit pd-mapper with all service-map JSON files.
-3. Load ALL downstream audio modules in Android init.target.rc early-init order.
+2. Load the PDR, notifier, snd-event, APR, and ADSP-loader foundation modules.
+3. Start qrtr-ns and explicit pd-mapper with all service-map JSON files. Starting
+   these before the notifier foundation can miss the required service state.
+4. Load the remaining downstream audio modules in Android init.target.rc order.
    audio_wcd937x must precede audio_wcd937x_slave; audio_machine_bengal is last.
-4. Only after all modules are loaded, write 1 to /sys/kernel/boot_adsp/boot,
+5. Only after all modules are loaded, write 1 to /sys/kernel/boot_adsp/boot,
    matching Android init.qcom.rc early-boot behavior.
-5. Re-probe soc:qcom,msm-audio-apr:qcom,q6core-audio after ADSP is online.
-6. Apply the Android mixer_paths_qrd.xml speaker route.
+6. Re-probe soc:qcom,msm-audio-apr:qcom,q6core-audio after ADSP is online.
+7. Apply the Android mixer_paths_qrd.xml speaker route.
 
 Booting ADSP before the full module stack caused the WCD937x RX SoundWire slave
 to remain unenumerated with "SWR bus clsh detected" and "device ... is not
@@ -68,24 +74,30 @@ With the corrected order:
   alsa_output.platform-soc_qcom_msm-audio-apr_qcom_q6core-audio_sound.stereo-fallback;
 - a 660 Hz PulseAudio tone was physically heard.
 
-Reproduce with audio/billie2-audio-smoke after mounting the Ubuntu Touch vendor
-partition below /opt/ut-root/android. Pass --tone for a direct hardware tone.
-The script was syntax-checked and run successfully against the live card.
-Automatic OpenRC startup is the next audio task. Earpiece, microphones,
-headphones, route switching, and call audio are still untested.
+audio/billie2-audio-smoke now mounts the retained Ubuntu Touch image, exposes
+firmware, starts QRTR services in the proven order, loads the complete audio
+stack, boots ADSP, and applies the speaker route. audio/billie2-audio.initd runs
+it as the billie2-audio OpenRC boot service. A full reboot proved automatic card
+registration, both codec endpoints, the PulseAudio sink, and speaker output;
+output also worked from OS sound settings. Earpiece, microphones, headphones,
+route switching, and call audio are still untested.
 
 PERSISTENT AUDIO BUILD INPUTS
 -----------------------------
 - audio/billie2-btfm-stub.c
 - audio/Makefile
 - audio/billie2-audio-smoke
+- audio/billie2-audio.initd
 - downloads/btfm-stub-build/billie2-btfm-stub.ko (downloads/ is gitignored)
 - downloads/kernel-billie2
 - downloads/kernel-build
 - downloads/toolchain
 - downloads/mixer_paths_qrd.xml
 - /home/nura/billie2-btfm-stub.ko on the device
-- /home/nura/billie2-audio-smoke on the device
+- /usr/local/sbin/billie2-audio-start on the device
+- /etc/init.d/billie2-audio on the device, enabled in the boot runlevel
+- /usr/local/sbin/wlfw-bdf and /usr/local/sbin/billie2-wifi-start on the device
+- /etc/init.d/billie2-wifi on the device, intentionally disabled at boot
 
 Module build command:
 PATH=/home/ravn/storage/nuraport/downloads/toolchain/usr/bin:$PATH \
@@ -122,10 +134,11 @@ SAFETY
 
 NEXT TASKS
 ----------
-1. Package audio/billie2-audio-smoke and its prerequisites as an idempotent
-   OpenRC service so the card and speaker route survive an ordinary reboot.
-2. Validate earpiece, microphones, headphones, route switching, and call audio.
-3. Continue Wi-Fi by resolving the missing QMI_WLFW_FW_READY_IND.
+1. Validate Wi-Fi association and traffic, then move the proven manual ordering
+   into a non-blocking service that runs after the required notifier foundation.
+2. Implement a native Bluetooth controller transport; the Android QTI HAL does
+   not register under the retained container, and this kernel lacks HCIUART.
+3. Validate earpiece, microphones, headphones, route switching, and call audio.
 4. Integrate accelerated Mir as a separate selectable session and fix touch
    coordinates there without breaking the Pixman recovery session.
 5. Validate SIM registration, calls, SMS, mobile data, cameras, GPS, sensors,
@@ -138,11 +151,13 @@ Continue the OnePlus Nord N100 (billie2) Nura port in
 GPU-STATUS.txt, audio/billie2-audio-smoke, and git history before changing
 anything. The phone is normally reachable as nura@172.16.42.1 over the
 nura-n100-usb NetworkManager profile; password is nura. Internal-speaker audio
-is now physically proven through ALSA and PulseAudio. Preserve the exact Android
-early-init module ordering: load the complete downstream audio stack before
-booting ADSP. Do not reintroduce the fake WCD937x aux component and do not start
-the full Android LXC. The next audio milestone is an idempotent OpenRC service,
-then earpiece/microphone/headphone/call testing. Keep downloads in the repo's
-downloads directory, retain the known-good boot rollback, update the status and
-handoff files after each milestone, and commit/push each proven milestone to
-ravng/Nura-for-OnePluss-N100.
+starts automatically through the billie2-audio OpenRC boot service and is
+physically proven through ALSA, PulseAudio, and OS settings. Preserve the exact
+ordering in audio/billie2-audio-smoke: foundation notifiers before QRTR
+services, the complete downstream module stack before ADSP boot, WCD937x codec
+before its slave driver, and the machine module last. Do not reintroduce the
+fake WCD937x aux component and do not start the full Android LXC. The next audio
+milestone is earpiece/microphone/headphone/route/call testing. Keep downloads in
+the repo's downloads directory, retain the known-good boot rollback, update the
+status and handoff files after each milestone, and commit/push each proven
+milestone to ravng/Nura-for-OnePluss-N100.

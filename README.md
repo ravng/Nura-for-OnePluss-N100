@@ -21,14 +21,19 @@ The default graphical session boots to Phrog/Phosh with Pixman software
 rendering. A side-by-side Ubuntu Touch Halium/libhybris/Mir path initializes
 the Adreno 610 through HWC2 and renders a visible Wayland client on the
 physical display, but is not yet the default session. Native internal-speaker
-audio now works through the physical WCD937x codec and Bengal ALSA card when
-started with the proven Android early-init ordering.
+audio starts automatically through OpenRC and works through the physical
+WCD937x codec, Bengal ALSA card, PulseAudio, and OS sound settings. Native
+Wi-Fi startup now reaches WLFW `FW_READY`, creates `wlan0`, and scans nearby
+2.4/5 GHz networks; its OpenRC service remains disabled while boot ordering is
+stabilized.
 
 - [`HARDWARE-STATUS.txt`](./HARDWARE-STATUS.txt): current component matrix.
 - [`GPU-STATUS.txt`](./GPU-STATUS.txt): evidence, exact versions, risks, and next step.
 - [`gpu/halium/README.txt`](./gpu/halium/README.txt): reproducible GPU smoke setup.
 - [`audio/billie2-audio-smoke`](./audio/billie2-audio-smoke): reproducible
-  WCD937x/ADSP/ALSA speaker bring-up and optional hardware tone.
+  WCD937x/ADSP/ALSA startup and speaker route used by the OpenRC service.
+- [`wifi/billie2-wifi-start`](./wifi/billie2-wifi-start): proven native IPA,
+  modem WLAN PD, BDF/calibration, and qcacld startup sequence.
 - [`archive/`](./archive/): known-good images and historical checkpoints.
 
 

@@ -1,9 +1,11 @@
 #!/bin/sh
 set -eu
 
-# Reproduce the proven native speaker path. The Ubuntu Touch vendor partition
-# must already be mounted below /opt/ut-root/android.
-VENDOR=${VENDOR:-/opt/ut-root/android/vendor}
+# Reproduce the proven native speaker path using the retained Ubuntu Touch
+# vendor partition for downstream firmware and kernel modules.
+UT_ROOT=${UT_ROOT:-/opt/ut-root}
+UT_IMAGE=${UT_IMAGE:-/home/nura/ut-gpu/ubuntu.img}
+VENDOR=${VENDOR:-$UT_ROOT/android/vendor}
 MODULES=$VENDOR/lib/modules
 CUSTOM_MODULE=${CUSTOM_MODULE:-/home/nura/billie2-btfm-stub.ko}
 QRTR_NS=${QRTR_NS:-/usr/local/sbin/qrtr-ns}
@@ -15,6 +17,39 @@ if [ "$(id -u)" -ne 0 ]; then
 	echo "Run as root: sudo $0" >&2
 	exit 2
 fi
+prepare_vendor() {
+	if [ -d "$MODULES" ]; then
+		return
+	fi
+
+	if [ ! -f "$UT_IMAGE" ]; then
+		echo "Missing retained Ubuntu Touch image: $UT_IMAGE" >&2
+		exit 1
+	fi
+
+	mkdir -p "$UT_ROOT"
+	mountpoint -q "$UT_ROOT" || mount -o loop,rw "$UT_IMAGE" "$UT_ROOT"
+	for tree in dev proc sys; do
+		mkdir -p "$UT_ROOT/$tree"
+		if ! mountpoint -q "$UT_ROOT/$tree"; then
+			mount --rbind "/$tree" "$UT_ROOT/$tree"
+			mount --make-rslave "$UT_ROOT/$tree"
+		fi
+	done
+	mkdir -p "$UT_ROOT/run"
+	mountpoint -q "$UT_ROOT/run" ||
+		mount -t tmpfs tmpfs "$UT_ROOT/run"
+
+	chroot "$UT_ROOT" /usr/libexec/lxc-android-config/mount-android-system ||
+		true
+	chroot "$UT_ROOT" /usr/libexec/lxc-android-config/mount-android-partitions ||
+		true
+	chroot "$UT_ROOT" /usr/libexec/lxc-android-config/mount-halium-overlay ||
+		true
+}
+
+prepare_vendor
+
 
 for required in "$MODULES" "$CUSTOM_MODULE" "$QRTR_NS" "$PD_MAPPER"; do
 	if [ ! -e "$required" ]; then
@@ -84,15 +119,18 @@ start_qrtr_services() {
 	sleep 1
 }
 
-load_audio_stack() {
-	# Match Android init.target.rc: all audio modules load during early-init;
-	# ADSP boots later during early-boot. Booting ADSP before this sequence
-	# leaves WCD937x RX SoundWire unenumerated with "SWR bus clsh detected".
+load_audio_foundation() {
 	load_module q6_pdr_dlkm "$MODULES/audio_q6_pdr.ko"
 	load_module q6_notifier_dlkm "$MODULES/audio_q6_notifier.ko"
 	load_module snd_event_dlkm "$MODULES/audio_snd_event.ko"
 	load_module apr_dlkm "$MODULES/audio_apr.ko"
 	load_module adsp_loader_dlkm "$MODULES/audio_adsp_loader.ko"
+}
+
+load_audio_stack() {
+	# Match Android init.target.rc: all audio modules load during early-init;
+	# ADSP boots later during early-boot. Booting ADSP before this sequence
+	# leaves WCD937x RX SoundWire unenumerated with "SWR bus clsh detected".
 	load_module q6_dlkm "$MODULES/audio_q6.ko"
 	load_module billie2_btfm_stub "$CUSTOM_MODULE"
 
@@ -162,7 +200,11 @@ route_speaker() {
 slot_suffix=$(find_slot_suffix)
 echo "Using Android slot ${slot_suffix}"
 link_modem_firmware "$slot_suffix"
+load_audio_foundation
 start_qrtr_services
+if [ "${1:-}" = "--foundation" ]; then
+	exit 0
+fi
 load_audio_stack
 boot_adsp
 wait_for_card

@@ -1,0 +1,81 @@
+#!/bin/sh
+set -eu
+
+FIRMWARE_TARGET=/run/billie2-firmware
+MODEM_IMAGE=/vendor/firmware_mnt/image
+RUNDIR=/run/nura-wifi
+BDF_FILE=${BDF_FILE:-$MODEM_IMAGE/bdwlan.b0b}
+BDF_ID=${BDF_ID:-0x0b}
+WLFW_BDF=${WLFW_BDF:-/usr/local/sbin/wlfw-bdf}
+
+[ "$(id -u)" -eq 0 ] || { echo "Run as root: sudo $0" >&2; exit 2; }
+mkdir -p /vendor /vendor/firmware_mnt "$FIRMWARE_TARGET" "$RUNDIR"
+mountpoint -q /vendor || mount -o ro /dev/mapper/vendor_a /vendor
+mountpoint -q /vendor/firmware_mnt ||
+	mount -o ro /dev/disk/by-partlabel/modem_a /vendor/firmware_mnt
+
+for required in /usr/local/sbin/billie2-audio-start \
+	/usr/local/sbin/rmtfs-downstream /usr/bin/tqftpserv "$WLFW_BDF" \
+	/vendor/lib/modules/qca_cld3_wlan.ko "$BDF_FILE"; do
+	[ -e "$required" ] || { echo "Missing Wi-Fi prerequisite: $required" >&2; exit 1; }
+done
+
+# IPA must leave reset before WLAN and modem share its SMMU context.
+if [ -c /dev/ipa ] && [ ! -e /sys/class/net/rmnet_ipa0 ]; then
+	printf '1\n' > /dev/ipa
+	sleep 2
+fi
+
+rm -rf "$FIRMWARE_TARGET"/*
+for firmware in "$MODEM_IMAGE"/*; do
+	ln -s "$firmware" "$FIRMWARE_TARGET/${firmware##*/}"
+done
+
+# The stock vendor link targets Android's unmounted /mnt/vendor/persist. Use the
+# persisted address when valid; otherwise create a stable local-administered pair.
+mkdir -p "$FIRMWARE_TARGET/wlan/qca_cld"
+cp /vendor/firmware/wlan/qca_cld/WCNSS_qcom_cfg.ini \
+	"$FIRMWARE_TARGET/wlan/qca_cld/WCNSS_qcom_cfg.ini"
+PERSIST_MAC=/run/msm-firmware-loader/mnt/persist/wlan_mac.bin
+if [ -s "$PERSIST_MAC" ]; then
+	cp "$PERSIST_MAC" "$FIRMWARE_TARGET/wlan/qca_cld/wlan_mac.bin"
+else
+	seed=$(tr -d -c 0-9a-f </etc/machine-id | cut -c1-10)
+	printf 'Intf0MacAddress=02%s\nIntf1MacAddress=06%s\nEND\n' "$seed" "$seed" \
+		>"$FIRMWARE_TARGET/wlan/qca_cld/wlan_mac.bin"
+fi
+printf '%s' "$FIRMWARE_TARGET" >/sys/module/firmware_class/parameters/path
+
+# Load PDR/notifier/APR before starting the modem root PD. Starting rmtfs first
+# can miss service mappings or crash the modem.
+/usr/local/sbin/billie2-audio-start --foundation
+udevadm trigger /sys/class/uio/uio0
+udevadm settle
+rc-service tqftpserv stop >/dev/null 2>&1 || true
+pidof tqftpserv >/dev/null ||
+	/usr/bin/tqftpserv >"$RUNDIR/tqftpserv.log" 2>&1 &
+pidof rmtfs-downstream >/dev/null ||
+	/usr/local/sbin/rmtfs-downstream -s -P -r >"$RUNDIR/rmtfs.log" 2>&1 &
+
+endpoint=
+for attempt in $(seq 1 30); do
+	endpoint=$(timeout 2 qrtr-lookup 69 2>/dev/null |
+		awk '$1 == 69 { print $4 " " $5; exit }')
+	[ -n "$endpoint" ] && break
+	sleep 1
+done
+[ -n "$endpoint" ] || { echo "WLFW QRTR service 69 did not appear" >&2; exit 1; }
+set -- $endpoint
+"$WLFW_BDF" "$1" "$2" "$BDF_ID" "$BDF_FILE"
+
+if ! grep -qw wlan /proc/modules; then
+	insmod /vendor/lib/modules/qca_cld3_wlan.ko
+fi
+printf 'ON\n' >/dev/wlan
+
+for attempt in $(seq 1 30); do
+	[ -e /sys/class/net/wlan0 ] && exit 0
+	sleep 1
+done
+echo "WLAN firmware became ready, but wlan0 was not registered" >&2
+exit 1

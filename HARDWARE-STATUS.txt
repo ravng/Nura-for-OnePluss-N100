@@ -21,6 +21,10 @@ WORKING
 - Volume-up button
 - Volume-down button
 - Power/wake button
+- Internal speaker audio through ALSA, PulseAudio, and OS sound settings
+  The billie2-audio OpenRC boot service automatically binds both physical
+  WCD937x SoundWire endpoints, registers the Bengal ALSA card, applies the
+  speaker route, and replaces PulseAudio Dummy Output with the real sink.
 
 WORKING WITH WORKAROUND
 -----------------------
@@ -29,12 +33,12 @@ WORKING WITH WORKAROUND
   module/helper. A correct downstream DRM/Phoc unblank fix is still needed.
   Accelerated Mir does not yet receive usable touch coordinates; see the
   accelerated-touch entry under NOT WORKING.
-- Internal speaker audio
-  The physical WCD937x codec, both SoundWire endpoints, Bengal ALSA card,
-  SIA81xx amplifiers, direct ALSA playback, and normal PulseAudio playback are
-  proven. Bring-up currently requires the exact Android early-init module
-  order followed by ADSP boot and the Android speaker mixer route. Use
-  audio/billie2-audio-smoke; automatic boot integration is not complete.
+- Wi-Fi interface and access-point scanning
+  Native WLFW BDF/calibration QMI requests produce FW_READY; qcacld registers
+  wlan0, p2p0, and wifi-aware0; NetworkManager listed nearby 2.4/5 GHz APs.
+  Startup is currently manual because enabling billie2-wifi in the boot
+  runlevel disrupts later boot services. Association and traffic are untested.
+
 
 
 
@@ -48,10 +52,9 @@ PARTIAL
   integrated into the normal login/session; default Phosh remains Pixman.
   See GPU-STATUS.txt and gpu/halium/README.txt.
 
-- Wi-Fi
-  wlanmdsp.mbn transfers successfully; QRTR WLAN service 69 appears; ICNSS
-  completes registration, MSA setup/readiness, and capability query. Firmware
-  never emits QMI_WLFW_FW_READY_IND, so wlan0 is not created.
+- Wi-Fi startup integration
+  The native manual sequence is proven, but its OpenRC service must remain
+  disabled until it can run without blocking or disrupting the boot runlevel.
 
 - Cellular modem foundation
   Patched rmtfs, QRTR namespace, pd-mapper, modem QMI service enumeration, and
@@ -70,10 +73,10 @@ PARTIAL
   "SWR bus clsh detected". The corrected order binds both WCD937x endpoints,
   registers bengal-qrd-snd-card, exposes the physical RDAC controls, and lets
   the Android speaker mixer route drive both SIA81xx amplifiers. A 440 Hz
-  direct ALSA tone and a 660 Hz PulseAudio tone were physically heard.
-  PulseAudio automatically replaces auto_null with the ALSA stereo fallback.
-  Earpiece, microphones, headphones, call audio, and persistence across an
-  ordinary boot remain unvalidated.
+  direct ALSA tone and a 660 Hz PulseAudio tone were physically heard. The
+  OpenRC boot service survived a full reboot; PulseAudio selected the real ALSA
+  stereo fallback automatically, and output was confirmed in OS sound settings.
+  Earpiece, microphones, headphones, and call audio remain unvalidated.
 
 - Charging and battery reporting
   Kernel charger and battery events exist. Charging behavior, percentage
@@ -81,9 +84,10 @@ PARTIAL
 
 NOT WORKING
 -----------
-- Wi-Fi network interface (no wlan0)
-- Wi-Fi access-point scanning
-- Wi-Fi association and traffic
+- Bluetooth controller
+  The QTI Android Bluetooth HAL stays alive but does not register its binder
+  service, so Bluebinder cannot create an HCI controller. The kernel also lacks
+  CONFIG_BT_HCIUART and SERIAL_DEV_BUS; plain hciattach is not a safe fallback.
 - Accelerated Mir touchscreen input
   Mir 1.8.2 evdev registers /dev/input/event1 after billie2_touch_resume is
   retriggered, but physical taps produce no EV_ABS coordinate events and
@@ -98,8 +102,8 @@ UNTESTED
 - Voice calls
 - SMS
 - Mobile data traffic
-- Earpiece, microphone, headphone, routing changes, and call audio
-- Bluetooth controller/HCI, discovery, pairing, and audio
+- Wi-Fi association and traffic
+- Bluetooth discovery, pairing, and audio after a controller transport exists
 - Front and rear cameras and camera flash
 - GPS/GNSS
 - Accelerometer, gyroscope, proximity, ambient light, and compass
@@ -127,8 +131,8 @@ SAFETY / CURRENT LIMITATIONS
   Native audio now works without starting Android LXC.
 - Never unload a partially initialized WLAN module live; a previous rmmod
   caused a kernel Oops.
-- Keep billie2-wifi disabled until FW_READY, wlan0, scanning, association, and
-  traffic are real.
+- Keep billie2-wifi disabled at boot. FW_READY, wlan0, and scanning work when
+  started manually, but synchronous OpenRC startup disrupts the boot sequence.
 - Never boot /tmp/nura-billie2-no-rejuvenation.img; it entered CrashDump.
 
 NEXT HARDWARE MILESTONES
@@ -139,9 +143,8 @@ NEXT HARDWARE MILESTONES
    login session while retaining Pixman recovery.
 3. Validate accelerated login, lock/unlock, apps, suspend/resume, and thermal
    stability.
-4. Obtain WLAN FW_READY, create wlan0, scan, associate, and pass traffic.
-5. Validate SIM registration, calls, SMS, mobile data, and call audio.
-6. Install the proven native audio sequence as an OpenRC service, then validate
-   earpiece, microphones, headphones, route switching, and call audio.
+4. Validate Wi-Fi association and traffic, then integrate non-blocking startup.
+5. Implement a Bluetooth controller transport, then test discovery and pairing.
+6. Validate earpiece, microphones, headphones, route switching, and call audio.
 7. Test cameras, GPS, sensors, fingerprint, NFC, microSD, haptics, LEDs,
    flashlight, video decode, and remaining USB modes.
