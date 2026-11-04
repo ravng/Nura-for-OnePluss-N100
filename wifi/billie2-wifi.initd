@@ -1,17 +1,38 @@
 #!/sbin/openrc-run
 
 name="OnePlus Nord N100 native Wi-Fi"
-description="Start IPA, modem WLAN PD, WLFW board-data handshake, and qcacld"
-command=/usr/local/sbin/billie2-wifi-start
+description="Start IPA, modem WLAN PD, WLFW board data, and qcacld asynchronously"
+wifi_command=/usr/local/sbin/billie2-wifi-start
+wifi_pidfile=/run/nura-wifi/autostart.pid
+wifi_log=/run/nura-wifi/autostart.log
 
 depend() {
-	need localmount
-	after modules udev
-	before billie2-audio networkmanager greetd
+	need localmount billie2-audio
+	use networkmanager
+	after networkmanager greetd
 }
 
 start() {
-	ebegin "Starting billie2 native Wi-Fi"
-	"$command"
+	if [ -e /sys/class/net/wlan0 ]; then
+		einfo "billie2 Wi-Fi is already initialized"
+		return 0
+	fi
+
+	checkpath --directory --mode 0755 /run/nura-wifi
+	rm -f "$wifi_pidfile"
+	ebegin "Scheduling billie2 native Wi-Fi initialization"
+	start-stop-daemon --start --background --make-pidfile \
+		--pidfile "$wifi_pidfile" --stdout "$wifi_log" --stderr "$wifi_log" \
+		--exec /bin/sh -- -c \
+		"/usr/bin/timeout 120 $wifi_command && exec /bin/sleep 2147483647"
 	eend $?
+}
+
+stop() {
+	ebegin "Stopping billie2 Wi-Fi service monitor"
+	start-stop-daemon --stop --pidfile "$wifi_pidfile" --retry TERM/5/KILL/1
+	status=$?
+	eend "$status"
+	einfo "Wi-Fi remains loaded; reboot before retrying initialization"
+	return "$status"
 }

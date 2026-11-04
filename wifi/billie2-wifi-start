@@ -9,6 +9,21 @@ BDF_ID=${BDF_ID:-0x0b}
 WLFW_BDF=${WLFW_BDF:-/usr/local/sbin/wlfw-bdf}
 
 [ "$(id -u)" -eq 0 ] || { echo "Run as root: sudo $0" >&2; exit 2; }
+
+if grep -qw wlan /proc/modules; then
+	if [ -e /sys/class/net/wlan0 ]; then
+		echo "Wi-Fi is already initialized"
+		exit 0
+	fi
+	echo "WLAN module is partially initialized; reboot instead of retrying" >&2
+	exit 1
+fi
+
+if ! mkdir "$RUNDIR.starting" 2>/dev/null; then
+	echo "Wi-Fi initialization is already running" >&2
+	exit 1
+fi
+trap 'rmdir "$RUNDIR.starting"' EXIT
 mkdir -p /vendor /vendor/firmware_mnt "$FIRMWARE_TARGET" "$RUNDIR"
 mountpoint -q /vendor || mount -o ro /dev/mapper/vendor_a /vendor
 mountpoint -q /vendor/firmware_mnt ||

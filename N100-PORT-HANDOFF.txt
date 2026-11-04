@@ -32,14 +32,13 @@ PROVEN HARDWARE
   automatic startup is enabled through the billie2-audio OpenRC boot service.
 - Partial accelerated GPU path: Ubuntu Touch Halium/libhybris/Mir initializes
   Adreno 610/HWC2 and displayed a Wayland client, but is not the normal login.
-- Wi-Fi works through a native manual startup path: patched tqftpserv exposes
-  service 69, wifi/wlfw-bdf.c sends the missing BDF/calibration QMI handshake,
-  FW_READY arrives, and wlan0 registers. NetworkManager scans, completes WPA
-  association and DHCP, and passes traffic over wlan0. Stock gIPAConfig=0x7d
-  froze the phone during association; wifi/billie2-wifi-start now writes a
-  runtime gIPAConfig=0 override, retaining IPA firmware only for required
-  SMMU setup. Automatic OpenRC startup remains disabled because synchronous
-  modem/WLAN initialization during the boot runlevel disrupts later services.
+- Native Wi-Fi automatically starts through the billie2-wifi default-runlevel
+  OpenRC service. The service launches its bounded 120-second worker after the
+  audio foundation and NetworkManager without blocking boot. Patched tqftpserv
+  exposes service 69, wifi/wlfw-bdf.c sends BDF/calibration, FW_READY arrives,
+  and wlan0 registers. NetworkManager automatically reconnects, receives DHCP,
+  and passes traffic. Stock gIPAConfig=0x7d froze association; the startup
+  script writes runtime gIPAConfig=0 while retaining IPA firmware for SMMU.
 - Partial modem/IPA foundation. SIM registration and calls remain unproven.
 
 AUDIO BREAKTHROUGH
@@ -136,14 +135,12 @@ SAFETY
 
 NEXT TASKS
 ----------
-1. Move the proven manual Wi-Fi ordering into a non-blocking service that runs
-   after the required notifier foundation.
+1. Integrate accelerated Mir as a separate selectable session and fix touch
+   coordinates without breaking the Pixman recovery session.
 2. Implement a native Bluetooth controller transport; the Android QTI HAL does
    not register under the retained container, and this kernel lacks HCIUART.
 3. Validate earpiece, microphones, headphones, route switching, and call audio.
-4. Integrate accelerated Mir as a separate selectable session and fix touch
-   coordinates there without breaking the Pixman recovery session.
-5. Validate SIM registration, calls, SMS, mobile data, cameras, GPS, sensors,
+4. Validate SIM registration, calls, SMS, mobile data, cameras, GPS, sensors,
    fingerprint, microSD, haptics, LEDs, suspend, and hardware video decode.
 
 PROMPT FOR A FUTURE LLM

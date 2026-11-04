@@ -25,6 +25,12 @@ WORKING
   The billie2-audio OpenRC boot service automatically binds both physical
   WCD937x SoundWire endpoints, registers the Bengal ALSA card, applies the
   speaker route, and replaces PulseAudio Dummy Output with the real sink.
+- Wi-Fi scanning, WPA association, DHCP, routed traffic, and automatic startup
+  billie2-wifi runs asynchronously in the default OpenRC runlevel after audio
+  and NetworkManager. Three reboot tests reached the responsive login without
+  blocking later services; wlan0 automatically reconnected to Paddys_5G and
+  passed five ICMP packets to 1.1.1.1 with zero loss. The runtime configuration
+  keeps gIPAConfig=0 because stock IPA/WDI packet offload froze association.
 
 WORKING WITH WORKAROUND
 -----------------------
@@ -33,15 +39,6 @@ WORKING WITH WORKAROUND
   module/helper. A correct downstream DRM/Phoc unblank fix is still needed.
   Accelerated Mir does not yet receive usable touch coordinates; see the
   accelerated-touch entry under NOT WORKING.
-- Wi-Fi scanning, association, and traffic
-  Native WLFW BDF/calibration QMI requests produce FW_READY; qcacld registers
-  wlan0, p2p0, and wifi-aware0. NetworkManager scans 2.4/5 GHz APs, associates
-  through WPA, receives DHCP configuration, and passes traffic over wlan0.
-  The stock gIPAConfig=0x7d froze the phone when association entered qcacld's
-  WLAN_IPA_STA_CONNECT path. The runtime config now uses gIPAConfig=0 while
-  retaining IPA firmware for the required SMMU setup; the UI stayed responsive
-  and three ICMP packets to 1.1.1.1 passed. Startup remains manual because the
-  synchronous OpenRC service disrupts later boot services.
 
 
 
@@ -56,9 +53,6 @@ PARTIAL
   integrated into the normal login/session; default Phosh remains Pixman.
   See GPU-STATUS.txt and gpu/halium/README.txt.
 
-- Wi-Fi startup integration
-  The native manual sequence is proven, but its OpenRC service must remain
-  disabled until it can run without blocking or disrupting the boot runlevel.
 
 - Cellular modem foundation
   Patched rmtfs, QRTR namespace, pd-mapper, modem QMI service enumeration, and
@@ -136,9 +130,9 @@ SAFETY / CURRENT LIMITATIONS
   Native audio now works without starting Android LXC.
 - Never unload a partially initialized WLAN module live; a previous rmmod
   caused a kernel Oops.
-- Keep billie2-wifi disabled at boot. FW_READY, wlan0, scanning, association,
-  and traffic work when started manually, but synchronous OpenRC startup
-  disrupts the boot sequence.
+- billie2-wifi runs asynchronously in the default runlevel. Its 120-second
+  worker timeout bounds failures, and its monitor keeps OpenRC service state
+  accurate after successful one-shot initialization.
 - Never boot /tmp/nura-billie2-no-rejuvenation.img; it entered CrashDump.
 
 NEXT HARDWARE MILESTONES
@@ -149,8 +143,7 @@ NEXT HARDWARE MILESTONES
    login session while retaining Pixman recovery.
 3. Validate accelerated login, lock/unlock, apps, suspend/resume, and thermal
    stability.
-4. Integrate the proven Wi-Fi sequence as a non-blocking startup service.
-5. Implement a Bluetooth controller transport, then test discovery and pairing.
-6. Validate earpiece, microphones, headphones, route switching, and call audio.
-7. Test cameras, GPS, sensors, fingerprint, NFC, microSD, haptics, LEDs,
+4. Implement a Bluetooth controller transport, then test discovery and pairing.
+5. Validate earpiece, microphones, headphones, route switching, and call audio.
+6. Test cameras, GPS, sensors, fingerprint, NFC, microSD, haptics, LEDs,
    flashlight, video decode, and remaining USB modes.

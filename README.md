@@ -23,10 +23,10 @@ the Adreno 610 through HWC2 and renders a visible Wayland client on the
 physical display, but is not yet the default session. Native internal-speaker
 audio starts automatically through OpenRC and works through the physical
 WCD937x codec, Bengal ALSA card, PulseAudio, and OS sound settings. Native
-Wi-Fi reaches WLFW `FW_READY`, creates `wlan0`, scans and associates, receives
-DHCP configuration, and passes traffic. WLAN IPA packet offload is disabled
-because the downstream association offload path froze the phone; the OpenRC
-service also remains disabled while boot ordering is stabilized.
+Wi-Fi reaches WLFW `FW_READY`, creates `wlan0`, automatically associates and
+receives DHCP configuration, and passes traffic. Its bounded asynchronous
+OpenRC service no longer delays the login path. WLAN IPA packet offload remains
+disabled because the downstream association offload path froze the phone.
 
 - [`HARDWARE-STATUS.txt`](./HARDWARE-STATUS.txt): current component matrix.
 - [`GPU-STATUS.txt`](./GPU-STATUS.txt): evidence, exact versions, risks, and next step.
