@@ -3,7 +3,7 @@ maintainer=""
 pkgname=device-oneplus-billie2-downstream
 pkgdesc="OnePlus Nord N100 (Ubuntu Touch downstream kernel)"
 pkgver=5
-pkgrel=6
+pkgrel=7
 url="https://gitlab.com/ubports/porting/community-ports/android10/oneplus-nord-n100/oneplus-billie2"
 license="MIT"
 arch="aarch64"
@@ -22,6 +22,7 @@ source="
 	kernel-cmdline.conf
 	udev-settle.conf
 	udev-settle
+	90-billie2-touchscreen.rules
 	phoc.ini
 	billie2-touch-resume
 	billie2-touch-resume.initd
@@ -50,6 +51,8 @@ package() {
 		"$pkgdir/etc/conf.d/udev-settle"
 	install -Dm755 "$srcdir/udev-settle" \
 		"$pkgdir/etc/init.d/udev-settle"
+	install -Dm644 "$srcdir/90-billie2-touchscreen.rules" \
+		"$pkgdir/usr/lib/udev/rules.d/90-billie2-touchscreen.rules"
 }
 
 phosh() {
@@ -80,6 +83,7 @@ sha512sums="
 4bc72fb80c18e99c656039f1bcfbdf7c4168e03a5ff5251de650b77e070d52797d68324d2b61f121e475a8370bb66bebf7db2dbf09fc5db75745a5e1f859d2de  kernel-cmdline.conf
 1ffcbbda9ad02faa8f8b44c9364f35d2dac3b38396a33a6c37a23fcf6391c229452fbabf2f033a3d4470c2cb3202e12bd8ee4873b97891d28841fad424de19e2  udev-settle.conf
 dc025755aad9040a4ace13c843638df5b7b3a7b9abb76ac5cae357704b966e0fd593661fbf1ed1e6f2eaef8cc7a3ef4fb5faa028dc2ea76b1e3b10df74b1c349  udev-settle
+f62dc594428352047023f70ae115e64487086b25576dc53e046a060c1a46cb5aecc60978f9dabf533581066c8dab11aaca49fc2da91792eeb4221bb8ce50a608  90-billie2-touchscreen.rules
 ae5a7c665d5a5f921c1de470503390b0b92b9a0e93525f285b186e3179beb73ffdf48187f809539573480e4cea426250d15dbd9ea597fbfd4966878a8e46b509  phoc.ini
 306870a63e012650bde02463d0fe5aed505f22fb44a1e0fd0bf5a4d9750918d1036a9abea4d25dd07b6eff920f2a3ccb83dfe8397d1ca7a6dac3b65f64424db5  billie2-touch-resume
 e666e3f57973394378ca7823b28166cce180abbfc4ba425daf0513b79f9d47b746776a0fdb668eb7191abdb91d287d8600c9c36aca2c130a74df0ce71fec7ba1  billie2-touch-resume.initd

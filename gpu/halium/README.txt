@@ -103,9 +103,9 @@ Mir 1.8.2 registering event1, reading the touchscreen event stream, dispatching
 touch events through its seat, and weston-simple-touch receiving wl_touch.down,
 wl_touch.motion, wl_touch.up, and wl_touch.frame with display coordinates.
 
-Mir did not enumerate event1 reliably during startup. Retriggering event1 with
-udevadm after Mir's input subsystem was ready made enumeration deterministic.
-The production session must perform that bounded hotplug trigger and keep
+The device package installs 90-billie2-touchscreen.rules, which marks event1
+as a seat touchscreen. Retriggering event1 after Mir's input subsystem is
+ready makes enumeration deterministic. The production session must also keep
 billie2_touch_resume active while Phoc is stopped.
 
 PROVEN GRAPHICS EVIDENCE
@@ -131,6 +131,15 @@ eglSubDriverAndroid.so, libadreno_app_profiles.so, and libminisf.so may be
 reported missing. Do not suppress them. The tested path initializes EGL,
 OpenGL ES 3.2, HWC2, physical display composition, and the visible client after
 those warnings.
+
+FULL LOMIRI SESSION RESULT
+--------------------------
+Lomiri full-shell remains alive on Adreno/HWC2 when run with a private session
+D-Bus, but renders only its wallpaper. Lomiri full-greeter also needs the
+Ubuntu Touch system-service environment; attempts with a private system D-Bus
+and AccountsService produced a black display. Do not publish either mode as a
+selectable login session yet. The missing contract is the complete Lomiri
+service set, not GPU or kernel touch support.
 
 SAFETY
 ------
