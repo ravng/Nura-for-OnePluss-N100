@@ -93,20 +93,20 @@ available. A successful cleanup leaves greetd STARTED and Android LXC STOPPED.
 The touch launcher also keeps billie2_touch_resume active while Phoc is
 stopped, binds the host udev database into the Ubuntu root, and waits until
 Mir registers /dev/input/event1 before asking for physical input. It passes
-only after Mir logs EV_ABS coordinate events.
+only after the Wayland client log contains wl_touch down, motion, or up
+events; Mir's raw input report logs EV_SYN rather than EV_ABS for this device.
 
 CURRENT TOUCH RESULT
 --------------------
-Accelerated touch is not working. Mir 1.8.2 registers event1, but physical
-taps and drags produce only EV_SYN frames and no EV_ABS coordinates. The
-weston-simple-touch surface is black; Mir's software cursor is a gray square
-at the top-left. Working touch would draw small colored crosses along each
-finger path.
+Accelerated touch reaches the Wayland client. A physical probe captured
+Mir 1.8.2 registering event1, reading the touchscreen event stream, dispatching
+touch events through its seat, and weston-simple-touch receiving wl_touch.down,
+wl_touch.motion, wl_touch.up, and wl_touch.frame with display coordinates.
 
-The physical no-response test still proved recovery: cleanup stopped Android
-LXC, removed the temporary /run/udev bind, restarted greetd and the existing
-touch-resume helper, and returned to the Pixman login. Do not treat event1
-registration alone as a touch milestone.
+Mir did not enumerate event1 reliably during startup. Retriggering event1 with
+udevadm after Mir's input subsystem was ready made enumeration deterministic.
+The production session must perform that bounded hotplug trigger and keep
+billie2_touch_resume active while Phoc is stopped.
 
 PROVEN GRAPHICS EVIDENCE
 ------------------------
@@ -117,7 +117,7 @@ PROVEN GRAPHICS EVIDENCE
 - GL renderer: Adreno (TM) 610
 - GL version: OpenGL ES 3.2
 - Internal display: 720x1600, approximately 90 Hz
-- Visible Wayland SHM client stable for the five-second probe
+- Touch coordinates delivered end-to-end as Wayland wl_touch events
 
 WHY OVERLAYS ARE DISABLED
 -------------------------
@@ -134,11 +134,10 @@ those warnings.
 
 SAFETY
 ------
-The Android init starts multiple vendor services, including modem and Wi-Fi
-services. Keep tests short until service isolation is packaged. Before each LXC
-start the launcher removes stale /dev/__properties__/* and /dev/socket/*;
-without this, Android init enters a reboot loop. Preserve the Pixman session as
-the default recovery path.
+The complete stock Android init is unsafe on this kernel: it entered Qualcomm
+CrashDump both with and without native WLAN loaded. Use only the isolated
+graphics-service container when developing the accelerated session. Preserve
+the Pixman session as the default recovery path.
 
 NEXT STEP
 ---------

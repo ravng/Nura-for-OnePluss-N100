@@ -90,6 +90,7 @@ done
 
 env -u EGL_PLATFORM \
     WAYLAND_DISPLAY=wayland-0 \
+    WAYLAND_DEBUG=1 \
     XDG_RUNTIME_DIR=/run \
     /usr/bin/weston-simple-touch \
     >"$client_log" 2>&1 &
@@ -119,8 +120,8 @@ done
 
 grep -F "GLRenderer: GL renderer: Adreno (TM) 610" "$server_log"
 grep -F "evdev-input: Added /dev/input/event1" "$server_log"
-if ! grep -F "type=EV_ABS" "$server_log"; then
-    echo "FAIL: Mir registered event1 but received no touchscreen coordinates" >&2
+if ! grep -E "wl_touch@[0-9]+\.(down|motion|up)\(" "$client_log"; then
+    echo "FAIL: Wayland client received no touchscreen events" >&2
     exit 1
 fi
 
